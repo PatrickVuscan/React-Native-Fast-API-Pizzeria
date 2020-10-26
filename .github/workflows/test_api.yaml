@@ -1,0 +1,36 @@
+name: Python Continous Integration for backend API.
+
+on: 
+  pull_request:
+    branches: [main]
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          auto-update-conda: true
+          python-version: 3.8
+      - name: Setup Conda Environment
+        shell: bash -l {0}
+        run: |
+          conda init bash
+          conda env create
+          conda activate csc301-api
+          pip-sync requirements.txt requirements-dev.txt
+        env:
+          PYTHONPATH: . 
+      - name: Run API Tests
+        shell: bash -l {0}
+        run: |
+          conda activate csc301-api
+          ./scripts/run_tests.sh
+      - name:  Run Linter
+        shell: bash -l {0}
+        run: |
+          conda activate csc301-api
+          ./scripts/lint.sh
