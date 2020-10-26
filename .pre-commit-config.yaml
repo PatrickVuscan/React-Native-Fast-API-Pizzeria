@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        entry: black
+        language: system
+        types: [python]
+      - id: lint-script
+        name: lint-script
+        entry: ./scripts/lint.sh
+        language: script
+        types: [python]
+  - repo: https://github.com/ryanrhee/shellcheck-py
+    rev: v0.7.1.1
+    hooks:
+      - id: shellcheck
