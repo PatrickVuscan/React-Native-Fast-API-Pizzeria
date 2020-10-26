@@ -1,0 +1,17 @@
+-c requirements.txt
+bandit
+black
+mypy
+pycodestyle
+pydocstyle
+pylint
+pyyaml
+safety
+pre-commit
+pytest
+pytest-cov
+pytest-testmon
+pytest-watch
+pytest-picked
+python-dotenv
+alembic # sqlalchemy migrations 
