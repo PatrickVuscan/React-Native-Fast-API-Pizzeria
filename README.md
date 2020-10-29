@@ -30,4 +30,4 @@ Give a ⭐️ if this project helped you!
 
 This project is [MIT](https://opensource.org/licenses/MIT) licensed.
 
-***
+---
