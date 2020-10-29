@@ -24,6 +24,10 @@ If you add, remove, or need to update versions of some requirements, edit the `.
 pip-compile requirements.in && pip-compile requirements-dev.in
 ```
 
+## 2. Install pre-commit hooks:
+
+Once you are in the root directory and activated the dev-environment don't forget to run `pre-commit install` each time you clone the repo.
+
 ### Notes:
 
 - Make sure you [install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
