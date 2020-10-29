@@ -1,14 +1,14 @@
 """Pydantic models."""
 from pydantic import BaseModel
 
-from api.model.models import SizeEnum
+from api.model.models import PizzaSizeEnum
 
 
 class PizzaBase(BaseModel):
     """A base class containing pydantic data validation for Pizza model."""
 
     kind: str
-    size: SizeEnum
+    size: PizzaSizeEnum
     base_price: int
 
 
