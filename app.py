@@ -1,13 +1,24 @@
-from typing import Optional
-
+"""Main file"""
 from fastapi import FastAPI
+from sqlalchemy.orm import Session
 import uvicorn
+
+from api.database.db import engine, SessionLocal, Base
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+def get_db():
+    local_db: Session = SessionLocal()
+    try:
+        yield local_db
+    finally:
+        local_db.close() # pylint: disable=no-member
+
 
 @app.get("/")
-def read_root():
+def hello_world():
     return {"Hello": "World"}
 
 
