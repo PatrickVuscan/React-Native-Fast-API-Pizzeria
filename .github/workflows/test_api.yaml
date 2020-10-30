@@ -1,6 +1,6 @@
 name: Python Continous Integration for backend API.
 
-on: 
+on:
   pull_request:
     branches: [main]
 
@@ -26,13 +26,13 @@ jobs:
           conda activate csc301-api
           pip-sync requirements.txt requirements-dev.txt
         env:
-          PYTHONPATH: . 
+          PYTHONPATH: .
       - name: Run API Tests
         shell: bash -l {0}
         run: |
           conda activate csc301-api
           ./scripts/run_tests.sh
-      - name:  Run Linter
+      - name: Run Linter
         shell: bash -l {0}
         run: |
           conda activate csc301-api
