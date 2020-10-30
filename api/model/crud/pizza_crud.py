@@ -10,7 +10,7 @@ from api.schema.schemas import PizzaCreate, PizzaUpdate
 
 
 class PizzaCRUD:
-    """Abtract class defining all CRUD operations for Exercise model."""
+    """Abtract class defining all CRUD operations for Pizza model."""
 
     @classmethod
     def get_pizzas(cls, dbb: Session):
@@ -34,7 +34,7 @@ class PizzaCRUD:
 
 
 class SqlPizzaCRUD(PizzaCRUD):
-    """A class containing SQL CRUD operations for Exercise model."""
+    """A class containing SQL CRUD operations for Pizza model."""
 
     @classmethod
     def get_pizzas(cls, dbb: Session):

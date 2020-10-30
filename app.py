@@ -9,6 +9,7 @@ from api.database.db import engine, SessionLocal
 from api.model import models
 from api.schema import schemas
 from api.model.crud.pizza_crud import SqlPizzaCRUD
+from api.model.crud.customer_crud import SqlCustomerCRUD
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -36,6 +37,16 @@ def create_pizza(pizza: schemas.PizzaCreate, dbb: Session = Depends(get_db)):
 @app.get("/pizzas", response_model=List[schemas.PizzaInDB])
 def read_pizzas(dbb: Session = Depends(get_db)):
     return SqlPizzaCRUD.get_pizzas(dbb=dbb)
+
+
+@app.post("/customers", response_model=schemas.CustomerInDB)
+def create_customer(customer: schemas.CustomerCreate, dbb: Session = Depends(get_db)):
+    return SqlCustomerCRUD.create_customer(dbb, customer)
+
+
+@app.get("/customers", response_model=List[schemas.CustomerInDB])
+def read_customers(dbb: Session = Depends(get_db)):
+    return SqlCustomerCRUD.get_customers(dbb=dbb)
 
 
 if __name__ == "__main__":
