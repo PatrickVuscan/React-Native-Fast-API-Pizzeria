@@ -8,7 +8,8 @@ import uvicorn
 from api.database.db import engine, SessionLocal
 from api.model import models
 from api.schema import schemas
-from api.model.crud.pizza_crud import SqlPizzaCRUD
+from api.model.crud.crud import Crud
+from api.util.utils import get_pizza_by_id_if_exists
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -28,14 +29,42 @@ def hello_world():
     return {"Hello": "World"}
 
 
-@app.post("/pizzas", response_model=schemas.PizzaInDB)
-def create_pizza(pizza: schemas.PizzaCreate, dbb: Session = Depends(get_db)):
-    return SqlPizzaCRUD.create_pizza(dbb, pizza)
+@app.get("/pizzas/{pid}", response_model=schemas.PizzaInDB)
+def read_pizza(pid: int, dbb: Session = Depends(get_db)):
+    return get_pizza_by_id_if_exists(pid, dbb)
 
 
 @app.get("/pizzas", response_model=List[schemas.PizzaInDB])
 def read_pizzas(dbb: Session = Depends(get_db)):
-    return SqlPizzaCRUD.get_pizzas(dbb=dbb)
+    return Crud.get_pizzas(dbb=dbb)
+
+
+@app.post("/pizzas", response_model=schemas.PizzaInDB)
+def create_pizza(pizza: schemas.PizzaCreate, dbb: Session = Depends(get_db)):
+    return Crud.create_pizza(dbb, pizza)
+
+
+@app.put("/pizzas/{pid}", response_model=schemas.PizzaInDB)
+def update_pizza(
+    pid: int,
+    pizza: schemas.PizzaRequestUpdate,
+    dbb: Session = Depends(get_db),
+):
+    prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
+    pizza_update = schemas.PizzaUpdate(
+        pizza_id=pid,
+        kind=pizza.kind if pizza.kind else prev_pizza.kind,
+        size=pizza.size if pizza.size else prev_pizza.size,
+        base_price=pizza.base_price if pizza.base_price else prev_pizza.base_price,
+    )
+    return Crud.update_pizza(dbb, pizza_update)
+
+
+@app.delete("/pizzas/{pid}", response_model=schemas.PizzaInDB)
+def delete_pizza(pid: int, dbb: Session = Depends(get_db)):
+    print(pid)
+    get_pizza_by_id_if_exists(pid, dbb)
+    return Crud.delete_pizza(dbb, pid)
 
 
 if __name__ == "__main__":
