@@ -37,7 +37,7 @@ class Pizza(Base):
     "Pizza model"
     __tablename__ = "pizza"
     pizza_id = Column("pizza_id", Integer, primary_key=True, nullable=False)
-    kind = Column("kind", String, nullable=True)
+    name = Column("kind", String, nullable=True)
     size = Column("size", Enum(PizzaSizeEnum), nullable=True)
     base_price = Column("base_price", Float, nullable=False)
 

@@ -8,7 +8,7 @@ from api.model.models import PizzaSizeEnum, DrinkNameEnum
 class PizzaBase(BaseModel):
     """A base class containing pydantic data validation for Pizza model."""
 
-    kind: str
+    name: str
     size: PizzaSizeEnum
     base_price: int
 
@@ -35,7 +35,7 @@ class PizzaUpdate(PizzaInDB):
 class PizzaRequestUpdate(BaseModel):
     """A class containing pydantic data validation response."""
 
-    kind: Optional[str] = None
+    name: Optional[str] = None
     size: Optional[PizzaSizeEnum] = None
     base_price: Optional[int] = None
 

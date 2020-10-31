@@ -53,7 +53,7 @@ def update_pizza(
     prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
     pizza_update = schemas.PizzaUpdate(
         pizza_id=pid,
-        kind=pizza.kind if pizza.kind else prev_pizza.kind,
+        kind=pizza.name if pizza.name else prev_pizza.name,
         size=pizza.size if pizza.size else prev_pizza.size,
         base_price=pizza.base_price if pizza.base_price else prev_pizza.base_price,
     )
