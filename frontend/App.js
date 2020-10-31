@@ -6,6 +6,7 @@ import Drinks from "./screens/Drinks";
 import Orders from "./screens/Orders";
 import Pizzas from "./screens/Pizzas";
 import Toppings from "./screens/Toppings";
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
