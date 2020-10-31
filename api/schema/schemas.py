@@ -1,4 +1,5 @@
 """Pydantic models."""
+from typing import Optional
 from pydantic import BaseModel
 
 from api.model.models import PizzaSizeEnum, DrinkNameEnum
@@ -29,6 +30,14 @@ class PizzaInDB(PizzaBase):
 
 class PizzaUpdate(PizzaInDB):
     """A class containing pydantic data validation for updating a Pizza model row."""
+
+
+class PizzaRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response."""
+
+    kind: Optional[str] = None
+    size: Optional[PizzaSizeEnum] = None
+    base_price: Optional[int] = None
 
 
 class CustomerBase(BaseModel):

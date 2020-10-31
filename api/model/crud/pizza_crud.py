@@ -61,3 +61,5 @@ class SqlPizzaCRUD(PizzaCRUD):
     def delete_pizza(cls, dbb: Session, pizza_id: int):
         pizza = cls.get_pizza_by_id(dbb, pizza_id)
         dbb.delete(pizza)
+        dbb.commit()
+        return pizza
