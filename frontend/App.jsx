@@ -46,9 +46,8 @@ export default class App extends React.Component {
     }
 
     return (
-      <NavigationContainer style={{ flex: 1 }}>
+      <NavigationContainer>
         <Tab.Navigator
-          style={{ flex: 1 }}
           tabBarOptions={{
             activeTintColor: 'tomato',
             inactiveTintColor: 'gray',

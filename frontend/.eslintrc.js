@@ -7,6 +7,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
     'airbnb',
   ],
   globals: {
@@ -22,22 +23,57 @@ module.exports = {
   },
   plugins: [
     'react',
+    'react-hooks',
     'import',
+    'import-newlines',
   ],
   rules: {
     indent: ['error', 2],
+    'import-newlines/enforce': ['error', {
+      items: 3,
+      'max-len': 100,
+      semi: false,
+    }],
     'no-multi-spaces': ['error'],
     'react/style-prop-object': ['off'],
     'no-console': 'off',
-    'object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
-    'object-curly-newline': ['error'],
     'no-use-before-define': 'off',
+    'object-property-newline': ['error', {
+      allowAllPropertiesOnSameLine: true,
+    }],
+    'react/jsx-fragments': ['error', 'syntax'],
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
-    'react/jsx-max-props-per-line': ['error',
-      {
-        maximum: 1,
-      },
-    ],
-    'react/jsx-one-expression-per-line': ['error', { allow: 'literal' }],
+    'react/jsx-closing-tag-location': ['error'],
+    'react/jsx-max-props-per-line': ['error', {
+      maximum: 1,
+    }],
+    'react/jsx-one-expression-per-line': ['error', {
+      allow: 'literal',
+    }],
+    'react/jsx-tag-spacing': ['error', {
+      closingSlash: 'never',
+      beforeSelfClosing: 'always',
+      afterOpening: 'never',
+      beforeClosing: 'never',
+    }],
   },
 };
+
+/*
+'object-curly-newline': ['error', {
+  ObjectExpression: 'always',
+  ObjectPattern: {
+    multiline: true,
+  },
+  ImportDeclaration: {
+    minProperties: 3,
+    multiLine: true,
+  },
+  ExportDeclaration: {
+    minProperties: 3,
+    multiline: true,
+  }
+}
+],
+
+*/
