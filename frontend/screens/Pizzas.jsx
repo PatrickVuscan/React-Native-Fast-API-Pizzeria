@@ -2,7 +2,11 @@
 import { Picker } from '@react-native-picker/picker';
 import {
   Button,
-  Container, Content, Form, Header, Text,
+  Container,
+  Content,
+  Form,
+  Header,
+  Text,
 } from 'native-base';
 import React, { useReducer } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -10,17 +14,15 @@ import { ScrollView } from 'react-native-gesture-handler';
 import GetPizzasForm from '../components/Forms/PizzaForms/GET';
 import PostPizzasForm from '../components/Forms/PizzaForms/POST';
 import PizzaList from '../components/Lists/PizzaList';
-import {
-  actionCreators, initialState, reducer,
-} from '../reducers/PizzaReducer';
+import { actionCreators, initialState, reducer } from '../reducers/PizzaReducer';
 import theme from '../styles';
 
 const pizzas = [
   {
     id: 1,
-    name: 'Peperoni Pizza',
+    name: 'Pepperoni Pizza',
     size: 'XL',
-    toppings: ['Peperoni', 'Steak'],
+    toppings: ['Pepperoni', 'Steak'],
     base_price: 9.98,
   },
   {
@@ -58,6 +60,7 @@ const Pizzas = () => {
       <PostPizzasForm
         actionCreators={actionCreators}
         dispatch={dispatch}
+        state={state}
       />
     );
 
@@ -88,7 +91,6 @@ const Pizzas = () => {
               Request Type
             </Text>
             <Picker
-              mode="dropdown"
               style={{
                 width: '30%',
               }}
@@ -131,7 +133,6 @@ const Pizzas = () => {
   );
 };
 
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});
 
 export default Pizzas;

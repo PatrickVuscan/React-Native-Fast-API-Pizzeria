@@ -41,6 +41,7 @@ module.exports = {
     'object-property-newline': ['error', {
       allowAllPropertiesOnSameLine: true,
     }],
+    'react/prop-types': ['off'],
     'react/jsx-fragments': ['error', 'syntax'],
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
     'react/jsx-closing-tag-location': ['error'],

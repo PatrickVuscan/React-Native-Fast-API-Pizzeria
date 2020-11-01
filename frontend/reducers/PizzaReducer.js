@@ -15,10 +15,10 @@ const actionCreators = {
 };
 
 const initialState = {
-  request: 'GET',
+  request: 'POST',
   id: '',
   name: '',
-  size: 3,
+  size: 3, // Small Pizza
   basePrice: 0.00,
 };
 
