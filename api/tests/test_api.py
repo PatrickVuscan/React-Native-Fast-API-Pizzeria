@@ -11,6 +11,16 @@ client = TestClient(app)
 class ToppingTest(unittest.TestCase):
     """Test all routes associated with topping."""
 
+    def test_read_topping(self):
+        res_top = client.post("/toppings", json={"name": "Pepperroni", "price": 3.98})
+        res_top = res_top.json()
+
+        res = client.get(f"/toppings/{res_top['topping_id']}")
+        assert res.status_code == 200
+        top = res.json()
+        assert top["name"] == "Pepperroni"
+        assert top["price"] == 3.98
+
     def test_read_toppings(self):
         res = client.get("/toppings")
         assert res.status_code == 200
@@ -22,6 +32,40 @@ class ToppingTest(unittest.TestCase):
         assert res.status_code == 200
         toppings = res.json()
         assert toppings is not None
+
+    def test_update_topping_name(self):
+        res = client.post("/toppings", json={"name": "Pepperoni", "price": 3.99})
+        topping = res.json()
+
+        res = client.put(f"/toppings/{topping['topping_id']}", json={"name": "Chicken"})
+        assert res.status_code == 200
+
+        top = res.json()
+        assert top["name"] == "Chicken"
+        assert top["price"] == 3.99
+
+    def test_update_topping_price(self):
+        res = client.post("/toppings", json={"name": "Pepperoni", "price": 3.99})
+        topping = res.json()
+
+        res = client.put(f"/toppings/{topping['topping_id']}", json={"price": 2.99})
+        assert res.status_code == 200
+
+        top = res.json()
+        assert top["name"] == "Pepperoni"
+        assert top["price"] == 2.99
+
+    def test_delete_topping(self):
+        res_top = client.post("/toppings", json={"name": "Pepperroni", "price": 3.98})
+        res_top = res_top.json()
+
+        res = client.delete(f"/toppings/{res_top['topping_id']}")
+        assert res.status_code == 200
+        del_top = res.json()
+        assert del_top["topping_id"] == res_top["topping_id"]
+
+        with pytest.raises(Exception):
+            client.get(f"/toppings/{res_top['topping_id']}")
 
 
 class PizzaTest(unittest.TestCase):
@@ -104,8 +148,19 @@ class PizzaTest(unittest.TestCase):
         assert res.status_code == 200
 
         pizza = res.json()
-        print(f"toppings: {pizza['toppings']}")
         assert len(pizza["toppings"]) != 0
         atp = pizza["toppings"][0]
         assert atp["name"] == "Pepperoni"
         assert atp["price"] == 3.99
+
+    def test_delete_pizza(self):
+        res_piz = client.post("/pizzas", json={"name": "Pepperroni Pizza", "size": 0, "base_price": 9.98})
+        res_piz = res_piz.json()
+
+        res = client.delete(f"/pizzas/{res_piz['pizza_id']}")
+        assert res.status_code == 200
+        del_pizza = res.json()
+        assert del_pizza["pizza_id"] == res_piz["pizza_id"]
+
+        with pytest.raises(Exception):
+            client.get(f"/pizzas/{res_piz['pizza_id']}")
