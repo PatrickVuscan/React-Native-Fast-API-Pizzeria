@@ -4,6 +4,7 @@ const actionTypes = {
   UPDATE_NAME: 'UPDATE_NAME',
   UPDATE_SIZE: 'UPDATE_SIZE',
   UPDATE_BASE_PRICE: 'UPDATE_BASE_PRICE',
+  UPDATE_TOPPINGS: 'UPDATE_TOPPINGS',
 };
 
 const actionCreators = {
@@ -11,7 +12,8 @@ const actionCreators = {
   updateID: (id) => ({ type: actionTypes.UPDATE_ID, payload: id }),
   updateName: (name) => ({ type: actionTypes.UPDATE_NAME, payload: name }),
   updateSize: (size) => ({ type: actionTypes.UPDATE_SIZE, payload: size }),
-  updateBasePrice: (price) => ({ type: actionTypes.UPDATE_BASE_PRICE, payload: price }),
+  updatePrice: (price) => ({ type: actionTypes.UPDATE_BASE_PRICE, payload: price }),
+  updateToppings: (toppings) => ({ type: actionTypes.UPDATE_TOPPINGS, payload: toppings }),
 };
 
 const initialState = {
@@ -20,6 +22,7 @@ const initialState = {
   name: '',
   size: 3, // Small Pizza
   basePrice: 0.00,
+  toppings: [],
 };
 
 const reducer = (state, action) => {
@@ -34,6 +37,8 @@ const reducer = (state, action) => {
     return { ...state, size: action.payload };
   case actionTypes.UPDATE_BASE_PRICE:
     return { ...state, basePrice: action.payload };
+  case actionTypes.UPDATE_TOPPINGS:
+    return { ...state, toppings: action.payload };
   default:
     return state;
   }
