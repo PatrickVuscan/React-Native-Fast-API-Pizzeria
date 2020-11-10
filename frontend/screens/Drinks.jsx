@@ -90,6 +90,7 @@ const Drinks = () => {
         actionCreators={actionCreators}
         dispatch={dispatch}
         state={state}
+        drinks={drinks}
       />
     );
   }
@@ -100,6 +101,7 @@ const Drinks = () => {
         actionCreators={actionCreators}
         dispatch={dispatch}
         state={state}
+        drinks={drinks}
       />
     );
   }

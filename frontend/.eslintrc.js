@@ -41,6 +41,7 @@ module.exports = {
     'object-property-newline': ['error', {
       allowAllPropertiesOnSameLine: true,
     }],
+    'arrow-body-style': ['error', { requireReturnForObjectLiteral: true }],
     'react/prop-types': ['off'],
     'react/jsx-fragments': ['error', 'syntax'],
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
