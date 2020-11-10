@@ -2,6 +2,7 @@
 import enum
 from sqlalchemy import Integer, Enum, Float, Column, String, Table, ForeignKey
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.sqltypes import Boolean
 
 from api.database.db import Base
 
@@ -26,13 +27,26 @@ class DrinkNameEnum(enum.Enum):
     Dr_Pepper = 7
 
 
-class DeliveryTypeEnum(enum.Enum):
+class DeliveryMethodEnum(enum.Enum):
     "Enumerate the different delivery options"
     Pickup = 0
     InHouse = 1
     UberEats = 2
     Foodora = 3
 
+
+order_pizzas = Table(
+    "order_pizza",
+    Base.metadata,
+    Column("pizza_id", Integer, ForeignKey("pizza.pizza_id")),
+    Column("order_id", Integer, ForeignKey("order.order_id")),
+)
+order_drinks = Table(
+    "order_drink",
+    Base.metadata,
+    Column("drink_id", Integer, ForeignKey("drink.drink_id")),
+    Column("order_id", Integer, ForeignKey("order.order_id")),
+)
 
 pizza_toppings = Table(
     "pizza_top",
@@ -49,6 +63,7 @@ class Pizza(Base):
     name = Column("kind", String, nullable=True)
     size = Column("size", Enum(PizzaSizeEnum), nullable=True)
     base_price = Column("base_price", Float, nullable=False)
+    _orders = relationship("Order", secondary=order_pizzas, backref=backref("pizzas"))
 
 
 class Topping(Base):
@@ -57,7 +72,17 @@ class Topping(Base):
     topping_id = Column("topping_id", Integer, primary_key=True, nullable=False)
     name = Column("name", String, nullable=False)
     price = Column("price", Float, nullable=False)
-    pizzas = relationship("Pizza", secondary=pizza_toppings, backref=backref("toppings"))
+    _pizzas = relationship("Pizza", secondary=pizza_toppings, backref=backref("toppings"))
+
+
+class Order(Base):
+    "Order model"
+    __tablename__ = "order"
+    order_id = Column("order_id", Integer, primary_key=True, nullable=False)
+    is_completed = Column("is_completed", Boolean, default=False)
+    delivery_method = Column(
+        "delivery_method", Enum(DeliveryMethodEnum), nullable=False
+    )  # Should this instead be a regular string?
 
 
 class Drink(Base):
@@ -66,6 +91,7 @@ class Drink(Base):
     drink_id = Column("drink_id", Integer, primary_key=True, nullable=False)
     name = Column("name", Enum(DrinkNameEnum), nullable=False)  # Should this instead be a regular string?
     price = Column("price", Float, nullable=False)
+    _orders = relationship("Order", secondary=order_drinks, backref=backref("drinks"))
 
 
 class Customer(Base):
