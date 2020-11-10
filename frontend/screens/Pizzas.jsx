@@ -37,12 +37,12 @@ const pizzas = [
 ];
 
 const toppings = [
-  { id: 1, name: 'Steak' },
-  { id: 2, name: 'Pepperoni' },
-  { id: 3, name: 'Parmesan' },
-  { id: 4, name: 'Chicken' },
-  { id: 5, name: 'Red Peppers' },
-  { id: 6, name: 'Onion' },
+  { id: 1, name: 'Steak', price: 5.99 },
+  { id: 2, name: 'Pepperoni', price: 2.99 },
+  { id: 3, name: 'Parmesan', price: 1.99 },
+  { id: 4, name: 'Chicken', price: 4.99 },
+  { id: 5, name: 'Red Peppers', price: 1.99 },
+  { id: 6, name: 'Onion', price: 0.99 },
 ];
 
 const requests = ['POST', 'GET', 'PUT', 'DELETE'];
