@@ -4,7 +4,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import theme from '../../../styles';
 
-export default ({ actionCreators, dispatch }) => (
+export default ({ actionCreators, dispatch, state }) => (
   <>
     <Text style={theme.centerText}>
       {"Enter the ID of the Pizza you'd like to delete"}
@@ -14,6 +14,7 @@ export default ({ actionCreators, dispatch }) => (
     >
       <Label>Pizza ID</Label>
       <Input
+        value={state.id}
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="numeric"

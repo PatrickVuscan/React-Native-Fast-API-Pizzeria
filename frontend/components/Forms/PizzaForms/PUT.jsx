@@ -18,16 +18,9 @@ const sizes = [
   { name: 'S', value: 3 },
 ];
 
-const toppings = [
-  { id: 1, name: 'Steak' },
-  { id: 2, name: 'Pepperoni' },
-  { id: 3, name: 'Parmesan' },
-  { id: 4, name: 'Chicken' },
-  { id: 5, name: 'Red Peppers' },
-  { id: 6, name: 'Onion' },
-];
-
-export default ({ actionCreators, dispatch, state }) => {
+export default ({
+  actionCreators, dispatch, state, toppings,
+}) => {
   const toppingsMS = [
     {
       id: 1,
@@ -46,6 +39,7 @@ export default ({ actionCreators, dispatch, state }) => {
       >
         <Label>Pizza ID</Label>
         <Input
+          value={state.id}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
