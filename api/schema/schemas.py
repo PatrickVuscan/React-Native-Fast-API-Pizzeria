@@ -32,6 +32,13 @@ class ToppingUpdate(ToppingInDB):
     """A class containing pydantic data validation for updating a Topping model row."""
 
 
+class ToppingRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response for update request."""
+
+    name: Optional[str] = None
+    price: Optional[float] = None
+
+
 class PizzaBase(BaseModel):
     """A base class containing pydantic data validation for Pizza model."""
 

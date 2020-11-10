@@ -54,10 +54,15 @@ class SqlToppingCRUD(ToppingCRUD):
 
     @staticmethod
     def update_topping(dbb: Session, topping: ToppingUpdate):
-        dbb.add(ToppingUpdate)
+        top_in_db = SqlToppingCRUD.get_topping_by_id(dbb, topping.topping_id)
+        top_in_db.name = topping.name
+        top_in_db.price = topping.price
         dbb.commit()
+        return top_in_db
 
     @staticmethod
     def delete_topping(dbb: Session, topping_id: int):
         topping = SqlToppingCRUD.get_topping_by_id(dbb, topping_id)
         dbb.delete(topping)
+        dbb.commit()
+        return topping

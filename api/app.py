@@ -50,16 +50,11 @@ def update_pizza(
     pizza: schemas.PizzaRequestUpdate,
     dbb: Session = Depends(get_db),
 ):
-    print("Hello from update")
     toppings = []
-    print(f"My pizza: {pizza}")
     for tid in pizza.toppings:
-        print(f"tid found {tid}")
         ftop = get_toppings_by_id_if_exists(tid, dbb)
-        print(f"ft is {ftop} with type = {type(ftop)}")
         toppings.append(ftop)
 
-    print(f"@route: {pizza.base_price}")
     prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
     pizza_update = schemas.PizzaUpdate(
         pizza_id=pid,
@@ -73,7 +68,6 @@ def update_pizza(
 
 @app.delete("/pizzas/{pid}", response_model=schemas.PizzaInDB)
 def delete_pizza(pid: int, dbb: Session = Depends(get_db)):
-    print(pid)
     get_pizza_by_id_if_exists(pid, dbb)
     return Crud.delete_pizza(dbb, pid)
 
@@ -98,14 +92,41 @@ def read_drinks(dbb: Session = Depends(get_db)):
     return Crud.get_drinks(dbb=dbb)
 
 
-@app.post("/toppings", response_model=schemas.ToppingInDB)
-def create_topping(topping: schemas.ToppingCreate, dbb: Session = Depends(get_db)):
-    return Crud.create_topping(dbb, topping)
+@app.get("/toppings/{tid}", response_model=schemas.ToppingInDB)
+def read_topping(tid: int, dbb: Session = Depends(get_db)):
+    return get_toppings_by_id_if_exists(tid, dbb)
 
 
 @app.get("/toppings", response_model=List[schemas.ToppingInDB])
 def read_toppings(dbb: Session = Depends(get_db)):
     return Crud.get_toppings(dbb=dbb)
+
+
+@app.post("/toppings", response_model=schemas.ToppingInDB)
+def create_topping(topping: schemas.ToppingCreate, dbb: Session = Depends(get_db)):
+    return Crud.create_topping(dbb, topping)
+
+
+@app.put("/toppings/{tid}", response_model=schemas.ToppingInDB)
+def update_topping(
+    tid: int,
+    topping: schemas.ToppingRequestUpdate,
+    dbb: Session = Depends(get_db),
+):
+
+    prev_top = get_toppings_by_id_if_exists(tid, dbb)
+    topping_update = schemas.ToppingUpdate(
+        topping_id=tid,
+        name=topping.name if topping.name else prev_top.name,
+        price=topping.price if topping.price else prev_top.price,
+    )
+    return Crud.update_topping(dbb, topping_update)
+
+
+@app.delete("/toppings/{tid}", response_model=schemas.ToppingInDB)
+def delete_topping(tid: int, dbb: Session = Depends(get_db)):
+    get_toppings_by_id_if_exists(tid, dbb)
+    return Crud.delete_topping(dbb, tid)
 
 
 if __name__ == "__main__":

@@ -54,14 +54,13 @@ class SqlPizzaCRUD(PizzaCRUD):
 
     @staticmethod
     def update_pizza(dbb: Session, pizza: PizzaUpdate):
-        pizza_in_db = dbb.query(PizzaModel).filter(PizzaModel.pizza_id == pizza.pizza_id).first()
+        pizza_in_db = SqlPizzaCRUD.get_pizza_by_id(dbb, pizza.pizza_id)
 
         pizza_in_db.name = pizza.name
         pizza_in_db.size = pizza.size
         pizza_in_db.base_price = pizza.base_price
 
         for topping in pizza.toppings:
-            print(f"update_pizza: Toppings found: {topping} with type {type(topping)}")
             tp_in_db = dbb.query(ToppingModel).filter(ToppingModel.topping_id == topping.topping_id).first()
             pizza_in_db.toppings.append(tp_in_db)
         dbb.commit()
