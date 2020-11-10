@@ -9,31 +9,27 @@ import {
 import React from 'react';
 import theme from '../../styles';
 
-export default ({ pizzas }) => (
+export default ({ drinks }) => (
   <Card style={{ ...theme.card, ...theme.padding }}>
     <CardItem
       header
       bordered
     >
-      <Text>Pizzas available at Milano Pizzeria!</Text>
+      <Text>
+        Drinks available at Milano Pizzeria!
+      </Text>
     </CardItem>
-    {pizzas.map((pizza) => (
+    {drinks.map((drink) => (
       <CardItem
         bordered
-        key={pizza.id}
+        key={drink.id}
       >
         <Body>
           <H1>
-            {pizza.name}
+            {drink.name}
           </H1>
           <Text>
-            {`Size: ${pizza.size}`}
-          </Text>
-          <Text>
-            {`Toppings: ${pizza.toppings.join(', ')}`}
-          </Text>
-          <Text>
-            {`Price: ${pizza.base_price}`}
+            {`Price: ${drink.price}`}
           </Text>
         </Body>
       </CardItem>
