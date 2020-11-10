@@ -1,9 +1,15 @@
 // @ts-check
 import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import { Input, Item, Label } from 'native-base';
+import {
+  Input,
+  Item,
+  Label,
+  Text,
+} from 'native-base';
 import React from 'react';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import theme from '../../../styles';
 
 const sizes = [
   { name: 'XL', value: 0 },
@@ -32,6 +38,22 @@ export default ({ actionCreators, dispatch, state }) => {
 
   return (
     <>
+      <Text style={theme.centerText}>
+        Update your Pizza by adding in the ID and selecting new properties for the pizza!
+      </Text>
+      <Item
+        floatingLabel
+      >
+        <Label>Pizza ID</Label>
+        <Input
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numeric"
+          onChangeText={(text) => {
+            dispatch(actionCreators.updateID(text));
+          }}
+        />
+      </Item>
       <Item
         floatingLabel
       >
@@ -46,7 +68,7 @@ export default ({ actionCreators, dispatch, state }) => {
           }}
         />
       </Item>
-      <Item style={{ flex: 1 }}>
+      <Item style={{ flex: 1, borderBottomWidth: 0 }}>
         <Label>Size</Label>
         <Picker
           style={{
@@ -54,6 +76,7 @@ export default ({ actionCreators, dispatch, state }) => {
             alignSelf: 'center',
             justifyContent: 'center',
             marginLeft: 20,
+
           }}
           selectedValue={state.size}
           onValueChange={(value) => {
