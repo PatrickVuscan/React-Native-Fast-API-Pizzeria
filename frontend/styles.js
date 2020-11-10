@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
   padding: {
     paddingLeft: 20,
     paddingRight: 20,
@@ -48,3 +48,5 @@ export default styles = StyleSheet.create({
   },
   verticalCenter: { alignItems: 'center' },
 });
+
+export default styles;
