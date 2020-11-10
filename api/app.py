@@ -9,7 +9,7 @@ from api.database.db import engine, SessionLocal
 from api.model import models
 from api.schema import schemas
 from api.model.crud.crud import Crud
-from api.util.utils import get_pizza_by_id_if_exists, get_toppings_by_id_if_exists
+from api.util.utils import get_pizza_by_id_if_exists, get_topping_by_id_if_exists, get_drink_by_id_if_exists
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -52,7 +52,7 @@ def update_pizza(
 ):
     toppings = []
     for tid in pizza.toppings:
-        ftop = get_toppings_by_id_if_exists(tid, dbb)
+        ftop = get_topping_by_id_if_exists(tid, dbb)
         toppings.append(ftop)
 
     prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
@@ -72,29 +72,9 @@ def delete_pizza(pid: int, dbb: Session = Depends(get_db)):
     return Crud.delete_pizza(dbb, pid)
 
 
-@app.post("/customers", response_model=schemas.CustomerInDB)
-def create_customer(customer: schemas.CustomerCreate, dbb: Session = Depends(get_db)):
-    return Crud.create_customer(dbb, customer)
-
-
-@app.get("/customers", response_model=List[schemas.CustomerInDB])
-def read_customers(dbb: Session = Depends(get_db)):
-    return Crud.get_customers(dbb=dbb)
-
-
-@app.post("/drinks", response_model=schemas.DrinkInDB)
-def create_drink(drink: schemas.DrinkCreate, dbb: Session = Depends(get_db)):
-    return Crud.create_drink(dbb, drink)
-
-
-@app.get("/drinks", response_model=List[schemas.DrinkInDB])
-def read_drinks(dbb: Session = Depends(get_db)):
-    return Crud.get_drinks(dbb=dbb)
-
-
 @app.get("/toppings/{tid}", response_model=schemas.ToppingInDB)
 def read_topping(tid: int, dbb: Session = Depends(get_db)):
-    return get_toppings_by_id_if_exists(tid, dbb)
+    return get_topping_by_id_if_exists(tid, dbb)
 
 
 @app.get("/toppings", response_model=List[schemas.ToppingInDB])
@@ -114,7 +94,7 @@ def update_topping(
     dbb: Session = Depends(get_db),
 ):
 
-    prev_top = get_toppings_by_id_if_exists(tid, dbb)
+    prev_top = get_topping_by_id_if_exists(tid, dbb)
     topping_update = schemas.ToppingUpdate(
         topping_id=tid,
         name=topping.name if topping.name else prev_top.name,
@@ -125,8 +105,55 @@ def update_topping(
 
 @app.delete("/toppings/{tid}", response_model=schemas.ToppingInDB)
 def delete_topping(tid: int, dbb: Session = Depends(get_db)):
-    get_toppings_by_id_if_exists(tid, dbb)
+    get_topping_by_id_if_exists(tid, dbb)
     return Crud.delete_topping(dbb, tid)
+
+
+@app.post("/customers", response_model=schemas.CustomerInDB)
+def create_customer(customer: schemas.CustomerCreate, dbb: Session = Depends(get_db)):
+    return Crud.create_customer(dbb, customer)
+
+
+@app.get("/customers", response_model=List[schemas.CustomerInDB])
+def read_customers(dbb: Session = Depends(get_db)):
+    return Crud.get_customers(dbb=dbb)
+
+
+@app.get("/drinks/{did}", response_model=schemas.DrinkInDB)
+def read_drink(did: int, dbb: Session = Depends(get_db)):
+    return get_drink_by_id_if_exists(did, dbb)
+
+
+@app.get("/drinks", response_model=List[schemas.DrinkInDB])
+def read_drinks(dbb: Session = Depends(get_db)):
+    return Crud.get_drinks(dbb=dbb)
+
+
+@app.post("/drinks", response_model=schemas.DrinkInDB)
+def create_drink(drink: schemas.DrinkCreate, dbb: Session = Depends(get_db)):
+    return Crud.create_drink(dbb, drink)
+
+
+@app.put("/drinks/{did}", response_model=schemas.DrinkInDB)
+def update_drink(
+    did: int,
+    drink: schemas.DrinkRequestUpdate,
+    dbb: Session = Depends(get_db),
+):
+
+    prev_drink = get_drink_by_id_if_exists(did, dbb)
+    drink_update = schemas.DrinkUpdate(
+        drink_id=did,
+        name=drink.name if drink.name else prev_drink.name,
+        price=drink.price if drink.price else prev_drink.price,
+    )
+    return Crud.update_drink(dbb, drink_update)
+
+
+@app.delete("/drinks/{did}", response_model=schemas.DrinkInDB)
+def delete_drink(did: int, dbb: Session = Depends(get_db)):
+    get_drink_by_id_if_exists(did, dbb)
+    return Crud.delete_drink(dbb, did)
 
 
 if __name__ == "__main__":

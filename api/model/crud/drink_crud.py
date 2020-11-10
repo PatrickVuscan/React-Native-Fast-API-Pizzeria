@@ -12,52 +12,57 @@ from api.schema.schemas import DrinkCreate, DrinkUpdate
 class DrinkCRUD:
     """Abtract class defining all CRUD operations for Drink model."""
 
-    @classmethod
-    def get_drinks(cls, dbb: Session):
+    @staticmethod
+    def get_drinks(dbb: Session):
         raise NotImplementedError
 
-    @classmethod
-    def get_drink_by_id(cls, dbb: Session, drink_id: int):
+    @staticmethod
+    def get_drink_by_id(dbb: Session, drink_id: int):
         raise NotImplementedError
 
-    @classmethod
-    def create_drink(cls, dbb: Session, drink: DrinkCreate):
+    @staticmethod
+    def create_drink(dbb: Session, drink: DrinkCreate):
         raise NotImplementedError
 
-    @classmethod
-    def update_drink(cls, dbb: Session, drink: DrinkUpdate):
+    @staticmethod
+    def update_drink(dbb: Session, drink: DrinkUpdate):
         raise NotImplementedError
 
-    @classmethod
-    def delete_drink(cls, dbb: Session, drink_id: int):
+    @staticmethod
+    def delete_drink(dbb: Session, drink_id: int):
         raise NotImplementedError
 
 
 class SqlDrinkCRUD(DrinkCRUD):
     """A class containing SQL CRUD operations for Drink model."""
 
-    @classmethod
-    def get_drinks(cls, dbb: Session):
+    @staticmethod
+    def get_drinks(dbb: Session):
         return dbb.query(DrinkModel).all()
 
-    @classmethod
-    def get_drink_by_id(cls, dbb: Session, drink_id: int):
+    @staticmethod
+    def get_drink_by_id(dbb: Session, drink_id: int):
         return dbb.query(DrinkModel).filter(DrinkModel.drink_id == drink_id).first()
 
-    @classmethod
-    def create_drink(cls, dbb: Session, drink: DrinkCreate):
+    @staticmethod
+    def create_drink(dbb: Session, drink: DrinkCreate):
         db_drink = DrinkModel(**drink.dict())
         dbb.add(db_drink)
         dbb.commit()
         dbb.refresh(db_drink)
         return db_drink
 
-    @classmethod
-    def update_drink(cls, dbb: Session, drink: DrinkUpdate):
-        dbb.add(DrinkUpdate)
+    @staticmethod
+    def update_drink(dbb: Session, drink: DrinkUpdate):
+        drink_in_db = SqlDrinkCRUD.get_drink_by_id(dbb, drink.drink_id)
+        drink_in_db.name = drink.name
+        drink_in_db.price = drink.price
         dbb.commit()
+        return drink_in_db
 
-    @classmethod
-    def delete_drink(cls, dbb: Session, drink_id: int):
-        drink = cls.get_drink_by_id(dbb, drink_id)
+    @staticmethod
+    def delete_drink(dbb: Session, drink_id: int):
+        drink = SqlDrinkCRUD.get_drink_by_id(dbb, drink_id)
         dbb.delete(drink)
+        dbb.commit()
+        return drink

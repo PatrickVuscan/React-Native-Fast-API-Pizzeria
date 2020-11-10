@@ -125,3 +125,10 @@ class DrinkInDB(DrinkBase):
 
 class DrinkUpdate(DrinkInDB):
     """A class containing pydantic data validation for updating a Drink model row."""
+
+
+class DrinkRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response."""
+
+    name: Optional[DrinkNameEnum] = None
+    price: Optional[float] = None
