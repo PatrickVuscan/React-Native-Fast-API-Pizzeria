@@ -1,6 +1,7 @@
 """SQL Models"""
 import enum
-from sqlalchemy import Integer, Enum, Float, Column, String
+from sqlalchemy import Integer, Enum, Float, Column, String, Table, ForeignKey
+from sqlalchemy.orm import backref, relationship
 
 from api.database.db import Base
 
@@ -33,6 +34,14 @@ class DeliveryTypeEnum(enum.Enum):
     Foodora = 3
 
 
+pizza_toppings = Table(
+    "pizza_top",
+    Base.metadata,
+    Column("pizza_id", Integer, ForeignKey("pizza.pizza_id")),
+    Column("topping_id", Integer, ForeignKey("topping.topping_id")),
+)
+
+
 class Pizza(Base):
     "Pizza model"
     __tablename__ = "pizza"
@@ -42,19 +51,20 @@ class Pizza(Base):
     base_price = Column("base_price", Float, nullable=False)
 
 
-class Drink(Base):
-    "Drink model"
-    __tablename__ = "drink"
-    drink_id = Column("drink_id", Integer, primary_key=True, nullable=False)
-    name = Column("name", Enum(DrinkNameEnum), nullable=False)  # Should this instead be a regular string?
-    price = Column("price", Float, nullable=False)
-
-
 class Topping(Base):
     "Topping model"
     __tablename__ = "topping"
     topping_id = Column("topping_id", Integer, primary_key=True, nullable=False)
     name = Column("name", String, nullable=False)
+    price = Column("price", Float, nullable=False)
+    pizzas = relationship("Pizza", secondary=pizza_toppings, backref=backref("toppings"))
+
+
+class Drink(Base):
+    "Drink model"
+    __tablename__ = "drink"
+    drink_id = Column("drink_id", Integer, primary_key=True, nullable=False)
+    name = Column("name", Enum(DrinkNameEnum), nullable=False)  # Should this instead be a regular string?
     price = Column("price", Float, nullable=False)
 
 
