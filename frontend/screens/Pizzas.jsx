@@ -9,10 +9,12 @@ import {
   Text,
 } from 'native-base';
 import React, { useReducer } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import DeletePizzasForm from '../components/Forms/PizzaForms/DELETE';
 import GetPizzasForm from '../components/Forms/PizzaForms/GET';
 import PostPizzasForm from '../components/Forms/PizzaForms/POST';
+import PutPizzasForm from '../components/Forms/PizzaForms/PUT';
 import PizzaList from '../components/Lists/PizzaList';
 import { actionCreators, initialState, reducer } from '../reducers/PizzaReducer';
 import theme from '../styles';
@@ -34,6 +36,15 @@ const pizzas = [
   },
 ];
 
+const toppings = [
+  { id: 1, name: 'Steak' },
+  { id: 2, name: 'Pepperoni' },
+  { id: 3, name: 'Parmesan' },
+  { id: 4, name: 'Chicken' },
+  { id: 5, name: 'Red Peppers' },
+  { id: 6, name: 'Onion' },
+];
+
 const requests = ['POST', 'GET', 'PUT', 'DELETE'];
 
 const Pizzas = () => {
@@ -49,6 +60,7 @@ const Pizzas = () => {
       <GetPizzasForm
         actionCreators={actionCreators}
         dispatch={dispatch}
+        state={state}
       />
     );
 
@@ -61,10 +73,30 @@ const Pizzas = () => {
         actionCreators={actionCreators}
         dispatch={dispatch}
         state={state}
+        toppings={toppings}
       />
     );
+  }
 
-    pizzaList = <PizzaList pizzas={[]} />;
+  if (state.request === 'PUT') {
+    formElements = (
+      <PutPizzasForm
+        actionCreators={actionCreators}
+        dispatch={dispatch}
+        state={state}
+        toppings={toppings}
+      />
+    );
+  }
+
+  if (state.request === 'DELETE') {
+    formElements = (
+      <DeletePizzasForm
+        actionCreators={actionCreators}
+        dispatch={dispatch}
+        state={state}
+      />
+    );
   }
 
   return (
@@ -96,6 +128,7 @@ const Pizzas = () => {
               }}
               selectedValue={state.request}
               onValueChange={(value) => {
+                // @ts-ignore
                 dispatch(actionCreators.updateRequest(value));
               }}
             >
@@ -126,13 +159,13 @@ const Pizzas = () => {
               <Text>Submit</Text>
             </Button>
           </Form>
-          {pizzaList}
+          {state.request === 'GET' && pizzaList}
         </Content>
       </ScrollView>
     </Container>
   );
 };
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
 
 export default Pizzas;
