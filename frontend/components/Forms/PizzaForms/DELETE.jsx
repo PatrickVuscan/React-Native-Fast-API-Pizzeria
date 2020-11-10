@@ -7,7 +7,7 @@ import theme from '../../../styles';
 export default ({ actionCreators, dispatch }) => (
   <>
     <Text style={theme.centerText}>
-      If you want to see all pizzas, just press submit with no ID!
+      {"Enter the ID of the Pizza you'd like to delete"}
     </Text>
     <Item
       floatingLabel
