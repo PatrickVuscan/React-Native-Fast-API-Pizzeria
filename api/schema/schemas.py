@@ -2,7 +2,7 @@
 from typing import Optional, List
 from pydantic import BaseModel
 
-from api.model.models import PizzaSizeEnum, DrinkNameEnum
+from api.model.models import DeliveryMethodEnum, PizzaSizeEnum, DrinkNameEnum
 
 
 class ToppingBase(BaseModel):
@@ -132,3 +132,38 @@ class DrinkRequestUpdate(BaseModel):
 
     name: Optional[DrinkNameEnum] = None
     price: Optional[float] = None
+
+
+class OrderBase(BaseModel):
+    """A base class containing pydantic data validation for Order model."""
+
+    is_completed: bool = False
+    delivery_method: DeliveryMethodEnum = DeliveryMethodEnum.PICKUP
+
+
+class OrderCreate(OrderBase):
+    """A class containing pydantic data validation for creating a Order model row."""
+
+
+class OrderInDB(OrderBase):
+    """A class containing pydantic data validation for in database Order model."""
+
+    order_id: int
+    pizzas: List[PizzaInDB] = []
+
+    class Config:
+        """Configure pydantic to use orm mode. i.e. drink.id."""
+
+        orm_mode = True
+
+
+class OrderRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response for update request."""
+
+    is_completed: Optional[bool] = None
+    delivery_method: Optional[DeliveryMethodEnum] = None
+    pizzas: List[int] = []
+
+
+class OrderUpdate(OrderInDB):
+    """A class containing pydantic data validation for updating a Order model row."""

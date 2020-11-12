@@ -25,6 +25,13 @@ def get_drink_by_id_if_exists(did: int, dbb: Session):
     return drink
 
 
+def get_order_by_id_if_exists(oid: int, dbb: Session):
+    order = Crud.get_order_by_id(dbb, oid)
+    if not order:
+        raise Exception(f"No such drink with {oid} found.")
+    return order
+
+
 def get_db():
     local_db: Session = SessionLocal()
     try:

@@ -2,6 +2,7 @@ import unittest
 import pytest
 
 from fastapi.testclient import TestClient
+from api.model.models import DeliveryMethodEnum
 
 from api.app import app
 
@@ -243,3 +244,99 @@ class DrinkTest(unittest.TestCase):
 
         with pytest.raises(Exception):
             client.get(f"/drinks/{res_drink['drink_id']}")
+
+
+class OrderTest(unittest.TestCase):
+    """Test all routes associated with order."""
+
+    def test_read_orders(self):
+        res_o1 = client.post("/orders", json={})
+        res_o2 = client.post("/orders", json={})
+        res_o3 = client.post("/orders", json={})
+
+        order1 = res_o1.json()
+        order2 = res_o2.json()
+        order3 = res_o3.json()
+
+        res = client.get("/orders")
+
+        assert res.status_code == 200
+
+        orders = res.json()[-3:]
+        assert len(orders) == 3
+        assert orders[0]["order_id"] == order1["order_id"]
+        assert orders[1]["order_id"] == order2["order_id"]
+        assert orders[2]["order_id"] == order3["order_id"]
+
+    def test_read_order(self):
+        res_o = client.post("/orders", json={})
+        res_o = res_o.json()
+
+        res = client.get(f"/orders/{res_o['order_id']}")
+
+        assert res.status_code == 200
+
+    def test_create_order(self):
+        res = client.post("/orders", json={})
+
+        assert res.status_code == 200
+
+        order = res.json()
+        assert order["order_id"] is not None
+        assert order["is_completed"] is False
+        assert order["pizzas"] == []
+        assert order["delivery_method"] is 0
+
+        res2 = client.post("/orders", json={})
+        assert res2.status_code == 200
+        order2 = res2.json()
+        assert order2["order_id"] != order["order_id"]
+
+    def test_update_order_is_completed(self):
+        res_o = client.post("/orders", json={})
+        res_o = res_o.json()
+        res = client.put(f"/orders/{res_o['order_id']}", json={"is_completed": True})
+        assert res.status_code == 200
+
+        updated_order = res.json()
+        assert updated_order["order_id"] == res_o["order_id"]
+        assert updated_order["is_completed"] is True
+        assert updated_order["delivery_method"] == res_o["delivery_method"]
+
+    def test_update_order_delivery_method(self):
+        res_o = client.post("/orders", json={})
+        res_o = res_o.json()
+        res = client.put(f"/orders/{res_o['order_id']}", json={"delivery_method": DeliveryMethodEnum.FOODORA.value})
+        assert res.status_code == 200
+
+        updated_order = res.json()
+        assert updated_order["order_id"] == res_o["order_id"]
+        assert updated_order["is_completed"] is False
+        assert updated_order["delivery_method"] == res_o["delivery_method"]
+
+    def test_update_order_pizzas(self):
+        res_p = client.post("/pizzas", json={"name": "Pepperroni Pizza", "size": 0, "base_price": 9.98})
+        res_p = res_p.json()
+        res_o = client.post("/orders", json={})
+        res_o = res_o.json()
+
+        res = client.put(f"/orders/{res_o['order_id']}", json={"pizzas": [res_p["pizza_id"]]})
+        assert res.status_code == 200
+
+        updated_order = res.json()
+        assert len(updated_order["pizzas"]) != 0
+        piz_in_order = updated_order["pizzas"][0]
+        assert piz_in_order["pizza_id"] == res_p["pizza_id"]
+        assert updated_order["order_id"] == res_o["order_id"]
+        assert updated_order["is_completed"] is False
+        assert updated_order["delivery_method"] == res_o["delivery_method"]
+
+    def test_delete_order(self):
+        res_o = client.post("/orders", json={})
+        res_o = res_o.json()
+        res = client.delete(f"/orders/{res_o['order_id']}")
+
+        assert res.status_code == 200
+
+        with pytest.raises(Exception):
+            client.get(f"/orders/{res_o['order_id']}")

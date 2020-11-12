@@ -8,6 +8,7 @@ from api.routes.pizza_routes import router as pizza_router
 from api.routes.topping_routes import router as topping_router
 from api.routes.drink_routes import router as drink_router
 from api.routes.customer_routes import router as customer_router
+from api.routes.order_routes import router as order_router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,6 +24,7 @@ app.include_router(pizza_router)
 app.include_router(topping_router)
 app.include_router(drink_router)
 app.include_router(customer_router)
+app.include_router(order_router)
 
 if __name__ == "__main__":
     uvicorn.run(

@@ -60,6 +60,7 @@ class SqlPizzaCRUD(PizzaCRUD):
         pizza_in_db.size = pizza.size
         pizza_in_db.base_price = pizza.base_price
 
+        pizza_in_db.toppings = []  # reset toppings?
         for topping in pizza.toppings:
             tp_in_db = dbb.query(ToppingModel).filter(ToppingModel.topping_id == topping.topping_id).first()
             pizza_in_db.toppings.append(tp_in_db)

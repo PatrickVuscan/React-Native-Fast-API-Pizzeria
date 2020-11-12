@@ -17,22 +17,22 @@ class PizzaSizeEnum(enum.Enum):
 
 class DrinkNameEnum(enum.Enum):
     "Enumerate the different drink names, i.e. Fanta, Pepsi, etc."
-    Water = 0
-    Sparkling_Water = 1
-    Juice = 2
-    Coke = 3
-    Diet_Coke = 4
-    Zero = 5
-    Pepsi = 6
-    Dr_Pepper = 7
+    WATER = 0
+    SPARKLING_WATER = 1
+    JUICE = 2
+    COKE = 3
+    DIET_COKE = 4
+    ZERO = 5
+    PEPSI = 6
+    DR_PEPPER = 7
 
 
 class DeliveryMethodEnum(enum.Enum):
     "Enumerate the different delivery options"
-    Pickup = 0
-    InHouse = 1
-    UberEats = 2
-    Foodora = 3
+    PICKUP = 0
+    IN_HOUSE = 1
+    UBER_EATS = 2
+    FOODORA = 3
 
 
 order_pizzas = Table(
@@ -75,16 +75,6 @@ class Topping(Base):
     _pizzas = relationship("Pizza", secondary=pizza_toppings, backref=backref("toppings"))
 
 
-class Order(Base):
-    "Order model"
-    __tablename__ = "order"
-    order_id = Column("order_id", Integer, primary_key=True, nullable=False)
-    is_completed = Column("is_completed", Boolean, default=False)
-    delivery_method = Column(
-        "delivery_method", Enum(DeliveryMethodEnum), nullable=False
-    )  # Should this instead be a regular string?
-
-
 class Drink(Base):
     "Drink model"
     __tablename__ = "drink"
@@ -92,6 +82,16 @@ class Drink(Base):
     name = Column("name", Enum(DrinkNameEnum), nullable=False)  # Should this instead be a regular string?
     price = Column("price", Float, nullable=False)
     _orders = relationship("Order", secondary=order_drinks, backref=backref("drinks"))
+
+
+class Order(Base):
+    "Order model"
+    __tablename__ = "order"
+    order_id = Column("order_id", Integer, primary_key=True, nullable=False)
+    is_completed = Column("is_completed", Boolean, default=False)
+    delivery_method = Column(
+        "delivery_method", Enum(DeliveryMethodEnum), default=DeliveryMethodEnum.PICKUP, nullable=False
+    )  # Should this instead be a regular string?
 
 
 class Customer(Base):

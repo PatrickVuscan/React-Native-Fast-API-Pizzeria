@@ -32,12 +32,13 @@ def update_pizza(
     pizza: schemas.PizzaRequestUpdate,
     dbb: Session = Depends(get_db),
 ):
+    prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
+
     toppings = []
     for tid in pizza.toppings:
         ftop = get_topping_by_id_if_exists(tid, dbb)
         toppings.append(ftop)
 
-    prev_pizza = get_pizza_by_id_if_exists(pid, dbb)
     pizza_update = schemas.PizzaUpdate(
         pizza_id=pid,
         name=pizza.name if pizza.name else prev_pizza.name,
