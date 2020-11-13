@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from api.model.crud.crud import Crud
 from api.schema import schemas
 from api.schema.schemas import OrderCreate
-from api.util.utils import get_db, get_order_by_id_if_exists, get_pizza_by_id_if_exists
+from api.util.utils import get_db, get_order_by_id_if_exists, get_pizza_by_id_if_exists, get_drink_by_id_if_exists
 
 router = APIRouter()
 
@@ -36,11 +36,18 @@ def update_order(oid: int, order: schemas.OrderRequestUpdate, dbb: Session = Dep
         fpiz = get_pizza_by_id_if_exists(pid, dbb)
         pizzas.append(fpiz)
 
+    drinks = []
+    print(order.drinks)
+    for did in order.drinks:
+        fdrink = get_drink_by_id_if_exists(did, dbb)
+        drinks.append(fdrink)
+
     order_update = schemas.OrderUpdate(
         order_id=oid,
         is_completed=order.is_completed if order.is_completed is not None else prev_order.is_completed,
         delivery_method=order.delivery_method if order.delivery_method else prev_order.delivery_method,
         pizzas=pizzas if pizzas else prev_order.pizzas,
+        drinks=drinks if drinks else prev_order.drinks,
     )
     return Crud.update_order(dbb=dbb, order=order_update)
 

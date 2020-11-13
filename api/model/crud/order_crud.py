@@ -1,7 +1,7 @@
 """Define CRUD operations for Order model."""
 from sqlalchemy.orm import Session
 
-from api.model.models import Order as OrderModel, Pizza as PizzaModel
+from api.model.models import Order as OrderModel, Pizza as PizzaModel, Drink as DrinkModel
 from api.schema.schemas import OrderCreate, OrderUpdate
 
 # Note: using dbb instead of db since pylint complains if var name length
@@ -70,6 +70,12 @@ class SqlOrderCRUD(OrderCRUD):
         for p in order.pizzas:
             p_in_db = dbb.query(PizzaModel).filter(PizzaModel.pizza_id == p.pizza_id).first()
             order_in_db.pizzas.append(p_in_db)
+
+        order_in_db.drinks = []
+
+        for drink in order.drinks:
+            d_in_db = dbb.query(DrinkModel).filter(DrinkModel.drink_id == drink.drink_id).first()
+            order_in_db.drinks.append(d_in_db)
 
         dbb.commit()
         return order_in_db

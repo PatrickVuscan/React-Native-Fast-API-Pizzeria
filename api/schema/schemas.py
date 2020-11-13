@@ -150,6 +150,7 @@ class OrderInDB(OrderBase):
 
     order_id: int
     pizzas: List[PizzaInDB] = []
+    drinks: List[DrinkInDB] = []
 
     class Config:
         """Configure pydantic to use orm mode. i.e. drink.id."""
@@ -163,6 +164,7 @@ class OrderRequestUpdate(BaseModel):
     is_completed: Optional[bool] = None
     delivery_method: Optional[DeliveryMethodEnum] = None
     pizzas: List[int] = []
+    drinks: List[int] = []
 
 
 class OrderUpdate(OrderInDB):
