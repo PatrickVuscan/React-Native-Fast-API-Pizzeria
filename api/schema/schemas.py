@@ -1,16 +1,50 @@
 """Pydantic models."""
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 
-from api.model.models import PizzaSizeEnum, DrinkNameEnum
+from api.model.models import DeliveryMethodEnum, PizzaSizeEnum, DrinkNameEnum
+
+
+class ToppingBase(BaseModel):
+    """A base class containing pydantic data validation for Topping model."""
+
+    name: str
+    price: float
+
+
+class ToppingCreate(ToppingBase):
+    """A class containing pydantic data validation for creating a Topping model row."""
+
+
+class ToppingInDB(ToppingBase):
+    """A class containing pydantic data validation for in database Topping model."""
+
+    topping_id: int
+    # pizzas: Optional[List["PizzaInDB"]] = []
+
+    class Config:
+        """Configure pydantic to use orm mode. i.e. topping.id."""
+
+        orm_mode = True
+
+
+class ToppingUpdate(ToppingInDB):
+    """A class containing pydantic data validation for updating a Topping model row."""
+
+
+class ToppingRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response for update request."""
+
+    name: Optional[str] = None
+    price: Optional[float] = None
 
 
 class PizzaBase(BaseModel):
     """A base class containing pydantic data validation for Pizza model."""
 
-    kind: str
+    name: str
     size: PizzaSizeEnum
-    base_price: int
+    base_price: float
 
 
 class PizzaCreate(PizzaBase):
@@ -21,9 +55,10 @@ class PizzaInDB(PizzaBase):
     """A class containing pydantic data validation for in database Pizza model."""
 
     pizza_id: int
+    toppings: List[ToppingInDB] = []
 
     class Config:
-        """Configure pydantic to use orm mode. i.e. pizza.id."""
+        """Configure pydantic to use orm mode. i.e. topping.id."""
 
         orm_mode = True
 
@@ -35,9 +70,10 @@ class PizzaUpdate(PizzaInDB):
 class PizzaRequestUpdate(BaseModel):
     """A class containing pydantic data validation response."""
 
-    kind: Optional[str] = None
+    name: Optional[str] = None
     size: Optional[PizzaSizeEnum] = None
-    base_price: Optional[int] = None
+    base_price: Optional[float] = None
+    toppings: List[int] = []
 
 
 class CustomerBase(BaseModel):
@@ -91,27 +127,45 @@ class DrinkUpdate(DrinkInDB):
     """A class containing pydantic data validation for updating a Drink model row."""
 
 
-class ToppingBase(BaseModel):
-    """A base class containing pydantic data validation for Topping model."""
+class DrinkRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response."""
 
-    name: str
-    price: float
-
-
-class ToppingCreate(ToppingBase):
-    """A class containing pydantic data validation for creating a Topping model row."""
+    name: Optional[DrinkNameEnum] = None
+    price: Optional[float] = None
 
 
-class ToppingInDB(ToppingBase):
-    """A class containing pydantic data validation for in database Topping model."""
+class OrderBase(BaseModel):
+    """A base class containing pydantic data validation for Order model."""
 
-    topping_id: int
+    is_completed: bool = False
+    delivery_method: DeliveryMethodEnum = DeliveryMethodEnum.PICKUP
+
+
+class OrderCreate(OrderBase):
+    """A class containing pydantic data validation for creating a Order model row."""
+
+
+class OrderInDB(OrderBase):
+    """A class containing pydantic data validation for in database Order model."""
+
+    order_id: int
+    pizzas: List[PizzaInDB] = []
+    drinks: List[DrinkInDB] = []
 
     class Config:
-        """Configure pydantic to use orm mode. i.e. topping.id."""
+        """Configure pydantic to use orm mode. i.e. drink.id."""
 
         orm_mode = True
 
 
-class ToppingUpdate(ToppingInDB):
-    """A class containing pydantic data validation for updating a Topping model row."""
+class OrderRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response for update request."""
+
+    is_completed: Optional[bool] = None
+    delivery_method: Optional[DeliveryMethodEnum] = None
+    pizzas: List[int] = []
+    drinks: List[int] = []
+
+
+class OrderUpdate(OrderInDB):
+    """A class containing pydantic data validation for updating a Order model row."""
