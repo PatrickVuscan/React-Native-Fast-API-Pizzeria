@@ -50,7 +50,7 @@ export default ({ pizzas }) => (
             {getToppings(pizza.toppings)}
           </Text>
           <Text>
-            {`Price: ${pizza.base_price}`}
+            {`Price: $${pizza.base_price}`}
           </Text>
         </Body>
       </CardItem>

@@ -8,7 +8,7 @@ import {
   Header,
   Text,
 } from 'native-base';
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DeleteDrinksForm from '../components/Forms/DrinkForms/DELETE';
@@ -19,57 +19,113 @@ import DrinkList from '../components/Lists/DrinkList';
 import { actionCreators, initialState, reducer } from '../reducers/DrinkReducer';
 import theme from '../styles';
 
-const drinks = [
-  {
-    id: 1,
-    name: 'Water',
-    price: 1.99,
-  },
-  {
-    id: 2,
-    name: 'Sparkling Water',
-    price: 1.99,
-  },
-  {
-    id: 3,
-    name: 'Juice',
-    price: 1.99,
-  },
-  {
-    id: 4,
-    name: 'Coke',
-    price: 1.99,
-  },
-  {
-    id: 5,
-    name: 'Diet Coke',
-    price: 1.99,
-  },
-  {
-    id: 6,
-    name: 'Zero',
-    price: 1.99,
-  },
-  {
-    id: 7,
-    name: 'Pepsi',
-    price: 1.99,
-  },
-  {
-    id: 8,
-    name: 'Dr. Pepper',
-    price: 1.99,
-  },
-];
-
 const requests = ['POST', 'GET', 'PUT', 'DELETE'];
+
+const drinkEnum = {
+  0: "Water",
+  1: "Sparkling Water",
+  2: "Juice",
+  3: "Coke",
+  4: "Diet Coke",
+  5: "Coke Zero",
+  6: "Pepsi",
+  7: "Dr. Pepper",
+};
 
 const Drinks = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [drinks, setDrinks] = useState([]);
   let formElements = null;
-  let drinkList = null;
+
+  useEffect(() => {
+    const refreshDrinks = async () => {
+      fetch(`http://127.0.0.1:5000/drinks`)
+        .then((res) => res.json())
+        .then((json) => {
+          setDrinks(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    refreshDrinks();
+  }, []);
 
   const submit = () => {
+    if (state.request === 'GET') {
+      if (state.id) {
+        return fetch(`http://127.0.0.1:5000/drinks/${state.id}`)
+          .then((response) => response.json())
+          .then((json) => {
+            setDrinks([json]);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      return fetch(`http://127.0.0.1:5000/drinks`)
+        .then((response) => response.json())
+        .then((json) => {
+          setDrinks(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'POST') {
+      console.log(state);
+      return fetch(`http://127.0.0.1:5000/drinks`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: parseInt(state.name, 10),
+          price: state.price,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setDrinks([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'PUT') {
+      return fetch(`http://127.0.0.1:5000/drinks/${state.id}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: parseInt(state.name, 10),
+          price: state.price,
+        }),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setDrinks([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'DELETE') {
+      return fetch(`http://127.0.0.1:5000/drinks/${state.id}`, {
+        method: 'DELETE',
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setDrinks([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   if (state.request === 'GET') {
@@ -80,8 +136,6 @@ const Drinks = () => {
         state={state}
       />
     );
-
-    drinkList = <DrinkList drinks={drinks} />;
   }
 
   if (state.request === 'POST') {
@@ -90,7 +144,7 @@ const Drinks = () => {
         actionCreators={actionCreators}
         dispatch={dispatch}
         state={state}
-        drinks={drinks}
+        drinkEnum={drinkEnum}
       />
     );
   }
@@ -101,7 +155,7 @@ const Drinks = () => {
         actionCreators={actionCreators}
         dispatch={dispatch}
         state={state}
-        drinks={drinks}
+        drinkEnum={drinkEnum}
       />
     );
   }
@@ -176,7 +230,10 @@ const Drinks = () => {
               <Text>Submit</Text>
             </Button>
           </Form>
-          {state.request === 'GET' && drinkList}
+          <DrinkList
+            drinks={drinks}
+            drinkEnum={drinkEnum}
+          />
         </Content>
       </ScrollView>
     </Container>

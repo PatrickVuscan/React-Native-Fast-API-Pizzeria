@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import theme from '../../styles';
 
-export default ({ drinks }) => (
+export default ({ drinks, drinkEnum }) => (
   <Card style={{ ...theme.card, ...theme.padding }}>
     <CardItem
       header
@@ -22,14 +22,17 @@ export default ({ drinks }) => (
     {drinks.map((drink) => (
       <CardItem
         bordered
-        key={drink.id}
+        key={drink.drink_id}
       >
         <Body>
           <H1>
-            {drink.name}
+            {drinkEnum[drink.name]}
           </H1>
           <Text>
-            {`Price: ${drink.price}`}
+            {`ID: ${drink.drink_id}`}
+          </Text>
+          <Text>
+            {`Price: $${drink.price}`}
           </Text>
         </Body>
       </CardItem>

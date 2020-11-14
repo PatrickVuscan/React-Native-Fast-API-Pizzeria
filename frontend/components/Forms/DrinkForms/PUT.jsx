@@ -11,13 +11,19 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import theme from '../../../styles';
 
 export default ({
-  actionCreators, dispatch, state, drinks,
+  actionCreators, dispatch, state, drinkEnum,
 }) => {
+  const drinkNames = [];
+
+  Object.keys(drinkEnum).forEach((key) => {
+    drinkNames.push({ id: key, name: drinkEnum[key] });
+  });
+
   const drinksMS = [
     {
       id: 1,
-      name: 'Drinks',
-      children: drinks,
+      name: 'Drink Names',
+      children: drinkNames,
     },
   ];
 
@@ -45,14 +51,12 @@ export default ({
           flex: 1,
           alignItems: 'stretch',
           flexDirection: 'column',
-          borderBottomWidth: 0,
-          margin: 0,
-          padding: 0,
         }}
       >
         <SectionedMultiSelect
-          selectedItems={[state.name]}
           single
+          styles={{ container: { flex: 1 } }}
+          selectedItems={state.name}
           items={drinksMS}
           expandDropDowns
           // @ts-ignore
@@ -64,8 +68,9 @@ export default ({
           showDropDowns
           readOnlyHeadings
           modalWithSafeAreaView
-          onSelectedItemsChange={(t) => {
-            dispatch(actionCreators.updateName(t[0]));
+          onSelectedItemsChange={(drink) => {
+            console.log(drink[0]);
+            dispatch(actionCreators.updateName(drink[0]));
           }}
         />
       </Item>

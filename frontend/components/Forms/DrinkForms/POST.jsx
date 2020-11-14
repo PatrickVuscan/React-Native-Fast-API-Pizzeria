@@ -1,35 +1,29 @@
 // @ts-check
+import { MaterialIcons } from '@expo/vector-icons';
 import { Input, Item, Label } from 'native-base';
 import React from 'react';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 export default ({
-  actionCreators, dispatch, state, drinks,
+  actionCreators, dispatch, state, drinkEnum,
 }) => {
+  const drinkNames = [];
+
+  Object.keys(drinkEnum).forEach((key) => {
+    drinkNames.push({ id: key, name: drinkEnum[key] });
+  });
+
   const drinksMS = [
     {
       id: 1,
-      name: 'Drinks',
-      children: drinks,
+      name: 'Drink Names',
+      children: drinkNames,
     },
   ];
 
   return (
     <>
       <Item
-        floatingLabel
-      >
-        <Label>Name</Label>
-        <Input
-          value={state.name}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="numeric"
-          onChangeText={(text) => {
-            dispatch(actionCreators.updateName(text));
-          }}
-        />
-      </Item>
-      {/* <Item
         style={{
           flex: 1,
           alignItems: 'stretch',
@@ -37,9 +31,9 @@ export default ({
         }}
       >
         <SectionedMultiSelect
-          styles={{ container: { flex: 1 } }}
-          selectedItems={[state.name]}
           single
+          styles={{ container: { flex: 1 } }}
+          selectedItems={state.name}
           items={drinksMS}
           expandDropDowns
           // @ts-ignore
@@ -51,11 +45,11 @@ export default ({
           showDropDowns
           readOnlyHeadings
           modalWithSafeAreaView
-          onSelectedItemsChange={(t) => {
-            dispatch(actionCreators.updateName(t[0]));
+          onSelectedItemsChange={(drink) => {
+            dispatch(actionCreators.updateName(drink[0]));
           }}
         />
-      </Item> */}
+      </Item>
       <Item
         floatingLabel
       >
