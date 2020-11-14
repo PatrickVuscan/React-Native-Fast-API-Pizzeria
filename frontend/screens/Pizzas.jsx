@@ -7,7 +7,7 @@ import {
   Header,
   Text,
 } from 'native-base';
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DeletePizzasForm from '../components/Forms/PizzaForms/DELETE';
@@ -18,21 +18,28 @@ import PizzaList from '../components/Lists/PizzaList';
 import { actionCreators, initialState, reducer } from '../reducers/PizzaReducer';
 import theme from '../styles';
 
-const toppings = [
-  { id: 1, name: 'Steak', price: 5.99 },
-  { id: 2, name: 'Pepperoni', price: 2.99 },
-  { id: 3, name: 'Parmesan', price: 1.99 },
-  { id: 4, name: 'Chicken', price: 4.99 },
-  { id: 5, name: 'Red Peppers', price: 1.99 },
-  { id: 6, name: 'Onion', price: 0.99 },
-];
-
 const requests = ['POST', 'GET', 'PUT', 'DELETE'];
 
 const Pizzas = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [pizzas, setPizzas] = useState([]);
+  const [toppings, setToppings] = useState([]);
   let formElements = null;
+
+  useEffect(() => {
+    const refreshToppings = async () => {
+      fetch(`http://127.0.0.1:5000/toppings`)
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    refreshToppings();
+  }, []);
 
   const submit = () => {
     if (state.request === 'GET') {
@@ -81,7 +88,6 @@ const Pizzas = () => {
         }))
         .then((res) => res.json())
         .then((json) => {
-          console.log('test json', json);
           setPizzas([json]);
         })
         .catch((error) => {

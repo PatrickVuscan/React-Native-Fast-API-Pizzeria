@@ -114,7 +114,7 @@ export default ({
           expandDropDowns
           // @ts-ignore
           IconRenderer={MaterialIcons}
-          uniqueKey="id"
+          uniqueKey="topping_id"
           subKey="children"
           selectText="Select Topings"
           alwaysShowSelectText
