@@ -29,11 +29,18 @@ module.exports = {
   ],
   rules: {
     indent: ['error', 2],
-    'import-newlines/enforce': ['error', {
-      items: 3,
-      'max-len': 100,
-      semi: false,
-    }],
+    quotes: ['off'],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+    'consistent-return': ['off'],
     'no-multi-spaces': ['error'],
     'react/style-prop-object': ['off'],
     'no-console': 'off',
@@ -41,8 +48,15 @@ module.exports = {
     'object-property-newline': ['error', {
       allowAllPropertiesOnSameLine: true,
     }],
-    'arrow-body-style': ['error', { requireReturnForObjectLiteral: true }],
+    'no-nested-ternary': ['warn'],
+    'lines-between-class-members': ["error", "always", { exceptAfterSingleLine: true }],
+    'no-unused-expressions': ["error", { allowTernary: true, allowShortCircuit: true }],
+    'no-unused-vars': ['warn', {
+      vars: 'local', args: 'after-used', ignoreRestSiblings: true, caughtErrors: "none",
+    }],
     'react/prop-types': ['off'],
+    'react/jsx-filename-extension': ['warn', { extensions: ['.jsx', '.tsx'] }],
+    'react/destructuring-assignment': ['off'],
     'react/jsx-fragments': ['error', 'syntax'],
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
     'react/jsx-closing-tag-location': ['error'],
@@ -52,31 +66,12 @@ module.exports = {
     'react/jsx-one-expression-per-line': ['error', {
       allow: 'literal',
     }],
+    'react/jsx-curly-brace-presence': ['off'],
     'react/jsx-tag-spacing': ['error', {
       closingSlash: 'never',
       beforeSelfClosing: 'always',
       afterOpening: 'never',
       beforeClosing: 'never',
     }],
-    'react/jsx-curly-brace-presence': ['off'],
   },
 };
-
-/*
-'object-curly-newline': ['error', {
-  ObjectExpression: 'always',
-  ObjectPattern: {
-    multiline: true,
-  },
-  ImportDeclaration: {
-    minProperties: 3,
-    multiLine: true,
-  },
-  ExportDeclaration: {
-    minProperties: 3,
-    multiline: true,
-  }
-}
-],
-
-*/
