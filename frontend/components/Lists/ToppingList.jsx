@@ -27,6 +27,9 @@ export default ({ toppings }) => (
             {topping.name}
           </H1>
           <Text>
+            {`ID: ${topping.topping_id}`}
+          </Text>
+          <Text>
             {`Price: ${topping.price}`}
           </Text>
         </Body>

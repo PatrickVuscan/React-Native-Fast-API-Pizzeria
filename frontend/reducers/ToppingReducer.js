@@ -28,7 +28,7 @@ const reducer = (state, action) => {
   case actionTypes.UPDATE_NAME:
     return { ...state, name: action.payload };
   case actionTypes.UPDATE_PRICE:
-    return { ...state, basePrice: action.payload };
+    return { ...state, price: action.payload };
   default:
     return state;
   }

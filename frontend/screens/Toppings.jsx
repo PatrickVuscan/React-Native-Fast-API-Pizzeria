@@ -8,7 +8,7 @@ import {
   Header,
   Text,
 } from 'native-base';
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DeleteToppingsForm from '../components/Forms/ToppingForms/DELETE';
@@ -19,23 +19,101 @@ import ToppingList from '../components/Lists/ToppingList';
 import { actionCreators, initialState, reducer } from '../reducers/ToppingReducer';
 import theme from '../styles';
 
-const toppings = [
-  { id: 1, name: 'Steak', price: 5.99 },
-  { id: 2, name: 'Pepperoni', price: 2.99 },
-  { id: 3, name: 'Parmesan', price: 1.99 },
-  { id: 4, name: 'Chicken', price: 4.99 },
-  { id: 5, name: 'Red Peppers', price: 1.99 },
-  { id: 6, name: 'Onion', price: 0.99 },
-];
-
 const requests = ['POST', 'GET', 'PUT', 'DELETE'];
 
 const Toppings = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [toppings, setToppings] = useState([]);
   let formElements = null;
-  let toppingList = null;
+
+  useEffect(() => {
+    const refreshToppings = async () => {
+      fetch(`http://127.0.0.1:5000/toppings`)
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    refreshToppings();
+  }, []);
 
   const submit = () => {
+    if (state.request === 'GET') {
+      if (state.id) {
+        return fetch(`http://127.0.0.1:5000/toppings/${state.id}`)
+          .then((res) => res.json())
+          .then((json) => {
+            setToppings([json]);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      return fetch(`http://127.0.0.1:5000/toppings`)
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'POST') {
+      return fetch(`http://127.0.0.1:5000/toppings/`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: state.name,
+          price: state.price,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'PUT') {
+      return fetch(`http://127.0.0.1:5000/toppings/${state.id}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: state.name,
+          price: state.price,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'DELETE') {
+      return fetch(`http://127.0.0.1:5000/toppings/${state.id}`, {
+        method: 'DELETE',
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setToppings([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   if (state.request === 'GET') {
@@ -46,8 +124,6 @@ const Toppings = () => {
         state={state}
       />
     );
-
-    toppingList = <ToppingList toppings={toppings} />;
   }
 
   if (state.request === 'POST') {
@@ -140,7 +216,7 @@ const Toppings = () => {
               <Text>Submit</Text>
             </Button>
           </Form>
-          {state.request === 'GET' && toppingList}
+          <ToppingList toppings={toppings} />
         </Content>
       </ScrollView>
     </Container>
