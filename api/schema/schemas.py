@@ -145,6 +145,7 @@ class DrinkRequestUpdate(BaseModel):
 class OrderBase(BaseModel):
     """A base class containing pydantic data validation for Order model."""
 
+    customer_id: int
     is_completed: bool = False
     delivery_method: DeliveryMethodEnum = DeliveryMethodEnum.PICKUP
 

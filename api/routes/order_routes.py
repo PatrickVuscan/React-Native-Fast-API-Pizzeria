@@ -43,6 +43,7 @@ def update_order(oid: int, order: schemas.OrderRequestUpdate, dbb: Session = Dep
 
     order_update = schemas.OrderUpdate(
         order_id=oid,
+        customer_id=prev_order.customer_id,
         is_completed=order.is_completed if order.is_completed is not None else prev_order.is_completed,
         delivery_method=order.delivery_method if order.delivery_method else prev_order.delivery_method,
         pizzas=pizzas if pizzas else prev_order.pizzas,

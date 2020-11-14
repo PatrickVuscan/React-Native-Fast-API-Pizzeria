@@ -250,9 +250,12 @@ class OrderTest(unittest.TestCase):
     """Test all routes associated with order."""
 
     def test_read_orders(self):
-        res_o1 = client.post("/orders", json={})
-        res_o2 = client.post("/orders", json={})
-        res_o3 = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res_o1 = client.post("/orders", json={"customer_id": customer["customer_id"]})
+        res_o2 = client.post("/orders", json={"customer_id": customer["customer_id"]})
+        res_o3 = client.post("/orders", json={"customer_id": customer["customer_id"]})
 
         order1 = res_o1.json()
         order2 = res_o2.json()
@@ -269,7 +272,10 @@ class OrderTest(unittest.TestCase):
         assert orders[2]["order_id"] == order3["order_id"]
 
     def test_read_order(self):
-        res_o = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
 
         res = client.get(f"/orders/{res_o['order_id']}")
@@ -277,7 +283,10 @@ class OrderTest(unittest.TestCase):
         assert res.status_code == 200
 
     def test_create_order(self):
-        res = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res = client.post("/orders", json={"customer_id": customer["customer_id"]})
 
         assert res.status_code == 200
 
@@ -287,7 +296,7 @@ class OrderTest(unittest.TestCase):
         assert order["pizzas"] == []
         assert order["delivery_method"] is 0
 
-        res2 = client.post("/orders", json={})
+        res2 = client.post("/orders", json={"customer_id": customer["customer_id"]})
         assert res2.status_code == 200
         order2 = res2.json()
         assert order2["order_id"] != order["order_id"]
@@ -295,7 +304,10 @@ class OrderTest(unittest.TestCase):
     pytest.mark.skip("Skip")
 
     def test_update_order_is_completed(self):
-        res_o = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
         res = client.put(f"/orders/{res_o['order_id']}", json={"is_completed": True})
         assert res.status_code == 200
@@ -308,7 +320,10 @@ class OrderTest(unittest.TestCase):
     pytest.mark.skip("Skip")
 
     def test_update_order_delivery_method(self):
-        res_o = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
         res = client.put(f"/orders/{res_o['order_id']}", json={"delivery_method": DeliveryMethodEnum.FOODORA.value})
         assert res.status_code == 200
@@ -321,9 +336,12 @@ class OrderTest(unittest.TestCase):
     pytest.mark.skip("Skip")
 
     def test_update_order_pizzas(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
         res_p = client.post("/pizzas", json={"name": "Pepperroni Pizza", "size": 0, "base_price": 9.98})
         res_p = res_p.json()
-        res_o = client.post("/orders", json={})
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
 
         res = client.put(f"/orders/{res_o['order_id']}", json={"pizzas": [res_p["pizza_id"]]})
@@ -338,10 +356,13 @@ class OrderTest(unittest.TestCase):
         assert updated_order["delivery_method"] == res_o["delivery_method"]
 
     def test_update_order_drinks(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
         res_d = client.post("/drinks", json={"name": 0, "price": 9.98})
         res_d = res_d.json()
 
-        res_o = client.post("/orders", json={})
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
 
         res = client.put(f"/orders/{res_o['order_id']}", json={"drinks": [res_d["drink_id"]]})
@@ -351,7 +372,10 @@ class OrderTest(unittest.TestCase):
         assert len(order["drinks"]) != 0
 
     def test_delete_order(self):
-        res_o = client.post("/orders", json={})
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
         res_o = res_o.json()
         res = client.delete(f"/orders/{res_o['order_id']}")
 

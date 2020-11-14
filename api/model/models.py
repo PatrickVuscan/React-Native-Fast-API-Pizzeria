@@ -92,6 +92,7 @@ class Order(Base):
     delivery_method = Column(
         "delivery_method", Enum(DeliveryMethodEnum), default=DeliveryMethodEnum.PICKUP, nullable=False
     )  # Should this instead be a regular string?
+    customer_id = Column(Integer, ForeignKey("customer.customer_id"), nullable=False)
 
 
 class Customer(Base):
@@ -100,3 +101,4 @@ class Customer(Base):
     customer_id = Column("customer_id", Integer, primary_key=True, nullable=False)
     phone_number = Column("phone_number", String, nullable=False)
     address = Column("address", String, nullable=True)
+    orders = relationship("Order")
