@@ -37,7 +37,6 @@ def update_order(oid: int, order: schemas.OrderRequestUpdate, dbb: Session = Dep
         pizzas.append(fpiz)
 
     drinks = []
-    print(order.drinks)
     for did in order.drinks:
         fdrink = get_drink_by_id_if_exists(did, dbb)
         drinks.append(fdrink)

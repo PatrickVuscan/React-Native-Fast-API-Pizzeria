@@ -98,4 +98,5 @@ class Customer(Base):
     "Customer model"
     __tablename__ = "customer"
     customer_id = Column("customer_id", Integer, primary_key=True, nullable=False)
-    address = Column("address", String, nullable=False)
+    phone_number = Column("phone_number", String, nullable=False)
+    address = Column("address", String, nullable=True)

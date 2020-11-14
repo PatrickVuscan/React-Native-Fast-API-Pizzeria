@@ -79,7 +79,8 @@ class PizzaRequestUpdate(BaseModel):
 class CustomerBase(BaseModel):
     """A base class containing pydantic data validation for Customer model."""
 
-    address: str
+    phone_number: str
+    address: Optional[str] = None
 
 
 class CustomerCreate(CustomerBase):
@@ -99,6 +100,13 @@ class CustomerInDB(CustomerBase):
 
 class CustomerUpdate(CustomerInDB):
     """A class containing pydantic data validation for updating a Customer model row."""
+
+
+class CustomerRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response."""
+
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
 
 
 class DrinkBase(BaseModel):

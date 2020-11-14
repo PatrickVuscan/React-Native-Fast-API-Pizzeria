@@ -359,3 +359,67 @@ class OrderTest(unittest.TestCase):
 
         with pytest.raises(Exception):
             client.get(f"/orders/{res_o['order_id']}")
+
+
+class CustomerTest(unittest.TestCase):
+    """Test all routes associated with customer."""
+
+    def test_create_customer(self):
+        res = client.post(
+            "/customers", json={"phone_number": "(416) 978-2011", "address": "7 Hart House Cir, Toronto, ON M5S 3H3"}
+        )
+
+        assert res.status_code == 200
+
+        customer = res.json()
+        assert customer["address"] == "7 Hart House Cir, Toronto, ON M5S 3H3"
+        assert customer["phone_number"] == "(416) 978-2011"
+
+        res = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+        assert res.status_code == 200
+
+        customer = res.json()
+        assert customer["address"] is None
+        assert customer["phone_number"] == "(416) 978-2011"
+
+    def test_read_customers(self):
+        res = client.get("/customers")
+
+        assert res.status_code == 200
+
+    def test_read_customer(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+
+        customer = res_c.json()
+
+        res = client.get(f"/customers/{customer['customer_id']}")
+
+        assert res.status_code == 200
+
+    def test_update_customer_phone_number(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+
+        customer = res_c.json()
+
+        res = client.put(f"/customers/{customer['customer_id']}", json={"phone_number": "(416) 978-2012"})
+
+        assert res.status_code == 200
+
+        customer = res.json()
+        assert customer["phone_number"] == "(416) 978-2012"
+        assert customer["address"] is None
+
+    def test_update_customer_address(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+
+        customer = res_c.json()
+
+        res = client.put(
+            f"/customers/{customer['customer_id']}", json={"address": "7 Hart House Cir, Toronto, ON M5S 3H3"}
+        )
+
+        assert res.status_code == 200
+
+        customer = res.json()
+        assert customer["phone_number"] == "(416) 978-2011"
+        assert customer["address"] == "7 Hart House Cir, Toronto, ON M5S 3H3"
