@@ -1,4 +1,3 @@
-// @ts-check
 import { Picker } from '@react-native-picker/picker';
 import {
   Button,
@@ -8,7 +7,7 @@ import {
   Header,
   Text,
 } from 'native-base';
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DeletePizzasForm from '../components/Forms/PizzaForms/DELETE';
@@ -18,23 +17,6 @@ import PutPizzasForm from '../components/Forms/PizzaForms/PUT';
 import PizzaList from '../components/Lists/PizzaList';
 import { actionCreators, initialState, reducer } from '../reducers/PizzaReducer';
 import theme from '../styles';
-
-const pizzas = [
-  {
-    id: 1,
-    name: 'Pepperoni Pizza',
-    size: 'XL',
-    toppings: ['Pepperoni', 'Steak'],
-    base_price: 9.98,
-  },
-  {
-    id: 2,
-    name: 'Cheese Pizza',
-    size: 'L',
-    toppings: [],
-    base_price: 8.98,
-  },
-];
 
 const toppings = [
   { id: 1, name: 'Steak', price: 5.99 },
@@ -49,10 +31,96 @@ const requests = ['POST', 'GET', 'PUT', 'DELETE'];
 
 const Pizzas = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [pizzas, setPizzas] = useState([]);
   let formElements = null;
-  let pizzaList = null;
 
   const submit = () => {
+    if (state.request === 'GET') {
+      if (state.id) {
+        return fetch(`http://127.0.0.1:5000/pizzas/${state.id}`)
+          .then((response) => response.json())
+          .then((json) => {
+            setPizzas([json]);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      return fetch(`http://127.0.0.1:5000/pizzas`)
+        .then((response) => response.json())
+        .then((json) => {
+          setPizzas(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'POST') {
+      return fetch(`http://127.0.0.1:5000/pizzas/`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: state.name,
+          size: state.size,
+          base_price: state.basePrice,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => fetch(`http://127.0.0.1:5000/pizzas/${res.pizza_id}`, {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            toppings: state.toppings,
+          }),
+        }))
+        .then((res) => res.json())
+        .then((json) => {
+          console.log('test json', json);
+          setPizzas([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'PUT') {
+      return fetch(`http://127.0.0.1:5000/pizzas/${state.id}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: state.name,
+          base_price: state.basePrice,
+          toppings: state.toppings,
+        }),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setPizzas([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    if (state.request === 'DELETE') {
+      return fetch(`http://127.0.0.1:5000/pizzas/${state.id}`, {
+        method: 'DELETE',
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setPizzas([json]);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   if (state.request === 'GET') {
@@ -63,8 +131,6 @@ const Pizzas = () => {
         state={state}
       />
     );
-
-    pizzaList = <PizzaList pizzas={pizzas} />;
   }
 
   if (state.request === 'POST') {
@@ -140,7 +206,6 @@ const Pizzas = () => {
                 />
               ))}
             </Picker>
-
           </View>
           <Form
             style={{
@@ -159,7 +224,7 @@ const Pizzas = () => {
               <Text>Submit</Text>
             </Button>
           </Form>
-          {state.request === 'GET' && pizzaList}
+          <PizzaList pizzas={pizzas} />
         </Content>
       </ScrollView>
     </Container>

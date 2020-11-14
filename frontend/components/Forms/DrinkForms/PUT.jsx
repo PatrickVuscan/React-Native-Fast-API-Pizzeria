@@ -47,7 +47,7 @@ export default ({
           flexDirection: 'column',
           borderBottomWidth: 0,
           margin: 0,
-          padding: 0
+          padding: 0,
         }}
       >
         <SectionedMultiSelect
