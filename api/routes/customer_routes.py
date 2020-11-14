@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from api.model.crud.crud import Crud
 from api.schema import schemas
-from api.util.utils import get_db, get_customer_by_id_if_exists
+from api.util.utils import get_db, get_customer_by_id_if_exists, get_order_by_id_if_exists
 
 router = APIRouter()
 
@@ -37,3 +37,17 @@ def update_customer(cid: int, customer: schemas.CustomerRequestUpdate, dbb: Sess
     )
 
     return Crud.update_customer(dbb=dbb, customer=customer_update)
+
+
+@router.put("/customers/{cid}/add_order/{oid}", response_model=schemas.CustomerInDB)
+def add_order_to_customer(cid: int, oid: int, dbb: Session = Depends(get_db)):
+    get_customer_by_id_if_exists(cid, dbb)
+    get_order_by_id_if_exists(oid, dbb)
+    return Crud.add_order_to_customer(dbb, cid, oid)
+
+
+@router.put("/customers/{cid}/remove_order/{oid}", response_model=schemas.CustomerInDB)
+def remove_order_for_customer(cid: int, oid: int, dbb: Session = Depends(get_db)):
+    get_customer_by_id_if_exists(cid, dbb)
+    get_order_by_id_if_exists(oid, dbb)
+    return Crud.remove_order_for_customer(dbb, cid, oid)

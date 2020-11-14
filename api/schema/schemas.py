@@ -91,6 +91,7 @@ class CustomerInDB(CustomerBase):
     """A class containing pydantic data validation for in database Customer model."""
 
     customer_id: int
+    orders: List["OrderInDB"] = []
 
     class Config:
         """Configure pydantic to use orm mode. i.e. customer.id."""
@@ -178,3 +179,9 @@ class OrderRequestUpdate(BaseModel):
 
 class OrderUpdate(OrderInDB):
     """A class containing pydantic data validation for updating a Order model row."""
+
+
+# Need this for circular reference between two models (or if one is declared before the other).
+CustomerInDB.update_forward_refs()
+CustomerUpdate.update_forward_refs()
+CustomerRequestUpdate.update_forward_refs()

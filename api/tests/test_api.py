@@ -432,6 +432,7 @@ class CustomerTest(unittest.TestCase):
         customer = res.json()
         assert customer["phone_number"] == "(416) 978-2012"
         assert customer["address"] is None
+        assert len(customer["orders"]) == 0
 
     def test_update_customer_address(self):
         res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
@@ -447,3 +448,45 @@ class CustomerTest(unittest.TestCase):
         customer = res.json()
         assert customer["phone_number"] == "(416) 978-2011"
         assert customer["address"] == "7 Hart House Cir, Toronto, ON M5S 3H3"
+        assert len(customer["orders"]) == 0
+
+    def test_add_customer_order(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
+        res_o = res_o.json()
+
+        res = client.put(f"/customers/{customer['customer_id']}/add_order/{res_o['order_id']}")
+
+        assert res.status_code == 200
+
+        customer = res.json()
+
+        assert len(customer["orders"]) == 1
+
+    def test_remove_customer_order(self):
+        res_c = client.post("/customers", json={"phone_number": "(416) 978-2011"})
+
+        customer = res_c.json()
+
+        res_o = client.post("/orders", json={"customer_id": customer["customer_id"]})
+        res_o = res_o.json()
+
+        res = client.put(
+            f"/customers/{customer['customer_id']}/add_order/{res_o['order_id']}", json={"oid": res_o["order_id"]}
+        )
+        assert res.status_code == 200
+        customer = res.json()
+        assert len(customer["orders"]) == 1
+
+        res = client.put(
+            f"/customers/{customer['customer_id']}/remove_order/{res_o['order_id']}", json={"oid": res_o["order_id"]}
+        )
+        assert res.status_code == 200
+        customer = res.json()
+        assert len(customer["orders"]) == 0
+
+        with pytest.raises(Exception):
+            client.get(f"/orders/{res_o['order_id']}")

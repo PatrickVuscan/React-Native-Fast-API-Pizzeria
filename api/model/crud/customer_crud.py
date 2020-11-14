@@ -1,7 +1,7 @@
 """Define CRUD operations for Customer model."""
 from sqlalchemy.orm import Session
 
-from api.model.models import Customer as CustomerModel
+from api.model.models import Customer as CustomerModel, Order as OrderModel
 from api.schema.schemas import CustomerCreate, CustomerUpdate
 
 # Note: using dbb instead of db since pylint complains if var name length
@@ -26,6 +26,14 @@ class CustomerCRUD:
 
     @staticmethod
     def update_customer(dbb: Session, customer: CustomerUpdate):
+        raise NotImplementedError
+
+    @staticmethod
+    def add_order_to_customer(dbb: Session, customer_id: int, order_id: int):
+        raise NotImplementedError
+
+    @staticmethod
+    def remove_order_for_customer(dbb: Session, customer_id: int, order_id: int):
         raise NotImplementedError
 
     @staticmethod
@@ -59,6 +67,27 @@ class SqlCustomerCRUD(CustomerCRUD):
         customer_in_db.address = customer.address
         customer_in_db.phone_number = customer.phone_number
 
+        dbb.commit()
+        return customer_in_db
+
+    @staticmethod
+    def add_order_to_customer(dbb: Session, customer_id: int, order_id: int):
+        customer_in_db = SqlCustomerCRUD.get_customer_by_id(dbb, customer_id)
+
+        order_in_db = dbb.query(OrderModel).filter(OrderModel.order_id == order_id).first()
+        customer_in_db.orders.append(order_in_db)
+        dbb.commit()
+
+        return customer_in_db
+
+    @staticmethod
+    def remove_order_for_customer(dbb: Session, customer_id: int, order_id: int):
+        customer_in_db = SqlCustomerCRUD.get_customer_by_id(dbb, customer_id)
+
+        order_in_db = dbb.query(OrderModel).filter(OrderModel.order_id == order_id).first()
+        customer_in_db.orders.remove(order_in_db)
+
+        dbb.delete(order_in_db)
         dbb.commit()
         return customer_in_db
 
