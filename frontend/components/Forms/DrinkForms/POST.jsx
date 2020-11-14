@@ -33,7 +33,7 @@ export default ({
         <SectionedMultiSelect
           single
           styles={{ container: { flex: 1 } }}
-          selectedItems={state.name}
+          selectedItems={[state.name]}
           items={drinksMS}
           expandDropDowns
           // @ts-ignore

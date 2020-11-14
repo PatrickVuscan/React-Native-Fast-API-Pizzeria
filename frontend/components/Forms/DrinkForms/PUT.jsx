@@ -56,7 +56,7 @@ export default ({
         <SectionedMultiSelect
           single
           styles={{ container: { flex: 1 } }}
-          selectedItems={state.name}
+          selectedItems={[state.name]}
           items={drinksMS}
           expandDropDowns
           // @ts-ignore
@@ -69,7 +69,6 @@ export default ({
           readOnlyHeadings
           modalWithSafeAreaView
           onSelectedItemsChange={(drink) => {
-            console.log(drink[0]);
             dispatch(actionCreators.updateName(drink[0]));
           }}
         />

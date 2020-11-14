@@ -74,9 +74,28 @@ const Drinks = () => {
         });
     }
     if (state.request === 'POST') {
-      console.log(state);
       return fetch(`http://127.0.0.1:5000/drinks`, {
         method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: parseInt(state.name, 10),
+          price: state.price,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setDrinks([json]);
+        })
+        .catch((error) => {
+          console.error('error', error);
+        });
+    }
+    if (state.request === 'PUT') {
+      return fetch(`http://127.0.0.1:5000/drinks/${state.id}`, {
+        method: 'PUT',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -94,31 +113,11 @@ const Drinks = () => {
           console.error(error);
         });
     }
-    if (state.request === 'PUT') {
-      return fetch(`http://127.0.0.1:5000/drinks/${state.id}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: parseInt(state.name, 10),
-          price: state.price,
-        }),
-      })
-        .then((response) => response.json())
-        .then((json) => {
-          setDrinks([json]);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
     if (state.request === 'DELETE') {
       return fetch(`http://127.0.0.1:5000/drinks/${state.id}`, {
         method: 'DELETE',
       })
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((json) => {
           setDrinks([json]);
         })
