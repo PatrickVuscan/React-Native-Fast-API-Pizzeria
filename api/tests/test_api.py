@@ -331,7 +331,7 @@ class OrderTest(unittest.TestCase):
         updated_order = res.json()
         assert updated_order["order_id"] == res_o["order_id"]
         assert updated_order["is_completed"] is False
-        assert updated_order["delivery_method"] == res_o["delivery_method"]
+        assert updated_order["delivery_method"] == DeliveryMethodEnum.FOODORA.value
 
     pytest.mark.skip("Skip")
 
