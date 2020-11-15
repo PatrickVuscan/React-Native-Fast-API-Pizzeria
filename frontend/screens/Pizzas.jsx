@@ -4,6 +4,7 @@ import {
   Container,
   Content,
   Form,
+  H1,
   Header,
   Text,
 } from 'native-base';
@@ -24,7 +25,33 @@ const Pizzas = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [pizzas, setPizzas] = useState([]);
   const [toppings, setToppings] = useState([]);
+  const [customer, setCustomer] = useState(null);
   let formElements = null;
+
+  useEffect(() => {
+    const getCustomer = async () => {
+      fetch(`http://127.0.0.1:5000/customers`, {
+        method: "POST",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          address: '123 King St.',
+          phone_number: '(647) 647-6467',
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setCustomer(json.customer_id);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    getCustomer();
+  }, []);
 
   useEffect(() => {
     const refreshToppings = async () => {
@@ -39,7 +66,7 @@ const Pizzas = () => {
     };
 
     refreshToppings();
-  }, []);
+  }, [state.request]);
 
   const submit = () => {
     if (state.request === 'GET') {
@@ -191,6 +218,9 @@ const Pizzas = () => {
               alignItems: 'center',
             }}
           >
+            <H1 style={theme.centerText}>
+              {`YOUR CUSTOMER ID FOR FUTURE REFERENCE IS ${customer}`}
+            </H1>
             <Text style={theme.centerText}>
               Request Type
             </Text>
@@ -236,7 +266,5 @@ const Pizzas = () => {
     </Container>
   );
 };
-
-// const styles = StyleSheet.create({});
 
 export default Pizzas;

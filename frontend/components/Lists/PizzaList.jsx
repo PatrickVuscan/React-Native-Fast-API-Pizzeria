@@ -9,6 +9,13 @@ import {
 import React from 'react';
 import theme from '../../styles';
 
+const sizes = {
+  0: 'XL',
+  1: 'L',
+  2: 'M',
+  3: 'S',
+};
+
 const getToppings = (toppings) => {
   let t = "Toppings: ";
 
@@ -31,7 +38,7 @@ export default ({ pizzas }) => (
     >
       <Text>Pizzas available at Milano Pizzeria!</Text>
     </CardItem>
-    {pizzas.map((pizza) => (
+    {pizzas && pizzas.map((pizza) => (
       <CardItem
         bordered
         key={pizza.pizza_id}
@@ -44,7 +51,7 @@ export default ({ pizzas }) => (
             {`ID: ${pizza.pizza_id}`}
           </Text>
           <Text>
-            {`Size: ${pizza.size}`}
+            {`Size: ${sizes[pizza.size]}`}
           </Text>
           <Text>
             {getToppings(pizza.toppings)}

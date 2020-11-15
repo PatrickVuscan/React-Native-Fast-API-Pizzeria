@@ -19,7 +19,7 @@ export default ({ drinks, drinkEnum }) => (
         Drinks available at Milano Pizzeria!
       </Text>
     </CardItem>
-    {drinks.map((drink) => (
+    {drinks && drinks.map((drink) => (
       <CardItem
         bordered
         key={drink.drink_id}
