@@ -140,3 +140,5 @@ cython_debug/
 .vscode/
 .ds_store
 *.db
+node_modules/**/*
+node_modules
