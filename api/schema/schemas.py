@@ -79,7 +79,8 @@ class PizzaRequestUpdate(BaseModel):
 class CustomerBase(BaseModel):
     """A base class containing pydantic data validation for Customer model."""
 
-    address: str
+    phone_number: str
+    address: Optional[str] = None
 
 
 class CustomerCreate(CustomerBase):
@@ -90,6 +91,7 @@ class CustomerInDB(CustomerBase):
     """A class containing pydantic data validation for in database Customer model."""
 
     customer_id: int
+    orders: List["OrderInDB"] = []
 
     class Config:
         """Configure pydantic to use orm mode. i.e. customer.id."""
@@ -99,6 +101,13 @@ class CustomerInDB(CustomerBase):
 
 class CustomerUpdate(CustomerInDB):
     """A class containing pydantic data validation for updating a Customer model row."""
+
+
+class CustomerRequestUpdate(BaseModel):
+    """A class containing pydantic data validation response."""
+
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
 
 
 class DrinkBase(BaseModel):
@@ -137,6 +146,7 @@ class DrinkRequestUpdate(BaseModel):
 class OrderBase(BaseModel):
     """A base class containing pydantic data validation for Order model."""
 
+    customer_id: int
     is_completed: bool = False
     delivery_method: DeliveryMethodEnum = DeliveryMethodEnum.PICKUP
 
@@ -169,3 +179,9 @@ class OrderRequestUpdate(BaseModel):
 
 class OrderUpdate(OrderInDB):
     """A class containing pydantic data validation for updating a Order model row."""
+
+
+# Need this for circular reference between two models (or if one is declared before the other).
+CustomerInDB.update_forward_refs()
+CustomerUpdate.update_forward_refs()
+CustomerRequestUpdate.update_forward_refs()

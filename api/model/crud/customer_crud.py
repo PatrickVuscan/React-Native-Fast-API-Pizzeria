@@ -1,7 +1,7 @@
 """Define CRUD operations for Customer model."""
 from sqlalchemy.orm import Session
 
-from api.model.models import Customer as CustomerModel
+from api.model.models import Customer as CustomerModel, Order as OrderModel
 from api.schema.schemas import CustomerCreate, CustomerUpdate
 
 # Note: using dbb instead of db since pylint complains if var name length
@@ -12,52 +12,86 @@ from api.schema.schemas import CustomerCreate, CustomerUpdate
 class CustomerCRUD:
     """Abtract class defining all CRUD operations for Customer model."""
 
-    @classmethod
-    def get_customers(cls, dbb: Session):
+    @staticmethod
+    def get_customers(dbb: Session):
         raise NotImplementedError
 
-    @classmethod
-    def get_customer_by_id(cls, dbb: Session, customer_id: int):
+    @staticmethod
+    def get_customer_by_id(dbb: Session, customer_id: int):
         raise NotImplementedError
 
-    @classmethod
-    def create_customer(cls, dbb: Session, customer: CustomerCreate):
+    @staticmethod
+    def create_customer(dbb: Session, customer: CustomerCreate):
         raise NotImplementedError
 
-    @classmethod
-    def update_customer(cls, dbb: Session, customer: CustomerUpdate):
+    @staticmethod
+    def update_customer(dbb: Session, customer: CustomerUpdate):
         raise NotImplementedError
 
-    @classmethod
-    def delete_customer(cls, dbb: Session, customer_id: int):
+    @staticmethod
+    def add_order_to_customer(dbb: Session, customer_id: int, order_id: int):
+        raise NotImplementedError
+
+    @staticmethod
+    def remove_order_for_customer(dbb: Session, customer_id: int, order_id: int):
+        raise NotImplementedError
+
+    @staticmethod
+    def delete_customer(dbb: Session, customer_id: int):
         raise NotImplementedError
 
 
 class SqlCustomerCRUD(CustomerCRUD):
     """A class containing SQL CRUD operations for Customer model."""
 
-    @classmethod
-    def get_customers(cls, dbb: Session):
+    @staticmethod
+    def get_customers(dbb: Session):
         return dbb.query(CustomerModel).all()
 
-    @classmethod
-    def get_customer_by_id(cls, dbb: Session, customer_id: int):
+    @staticmethod
+    def get_customer_by_id(dbb: Session, customer_id: int):
         return dbb.query(CustomerModel).filter(CustomerModel.customer_id == customer_id).first()
 
-    @classmethod
-    def create_customer(cls, dbb: Session, customer: CustomerCreate):
+    @staticmethod
+    def create_customer(dbb: Session, customer: CustomerCreate):
         db_customer = CustomerModel(**customer.dict())
         dbb.add(db_customer)
         dbb.commit()
         dbb.refresh(db_customer)
         return db_customer
 
-    @classmethod
-    def update_customer(cls, dbb: Session, customer: CustomerUpdate):
-        dbb.add(CustomerUpdate)
+    @staticmethod
+    def update_customer(dbb: Session, customer: CustomerUpdate):
+        customer_in_db = SqlCustomerCRUD.get_customer_by_id(dbb, customer.customer_id)
+
+        customer_in_db.address = customer.address
+        customer_in_db.phone_number = customer.phone_number
+
+        dbb.commit()
+        return customer_in_db
+
+    @staticmethod
+    def add_order_to_customer(dbb: Session, customer_id: int, order_id: int):
+        customer_in_db = SqlCustomerCRUD.get_customer_by_id(dbb, customer_id)
+
+        order_in_db = dbb.query(OrderModel).filter(OrderModel.order_id == order_id).first()
+        customer_in_db.orders.append(order_in_db)
         dbb.commit()
 
-    @classmethod
-    def delete_customer(cls, dbb: Session, customer_id: int):
-        customer = cls.get_customer_by_id(dbb, customer_id)
+        return customer_in_db
+
+    @staticmethod
+    def remove_order_for_customer(dbb: Session, customer_id: int, order_id: int):
+        customer_in_db = SqlCustomerCRUD.get_customer_by_id(dbb, customer_id)
+
+        order_in_db = dbb.query(OrderModel).filter(OrderModel.order_id == order_id).first()
+        customer_in_db.orders.remove(order_in_db)
+
+        dbb.delete(order_in_db)
+        dbb.commit()
+        return customer_in_db
+
+    @staticmethod
+    def delete_customer(dbb: Session, customer_id: int):
+        customer = SqlCustomerCRUD.get_customer_by_id(dbb, customer_id)
         dbb.delete(customer)

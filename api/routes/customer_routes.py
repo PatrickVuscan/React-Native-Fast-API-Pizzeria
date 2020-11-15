@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from api.model.crud.crud import Crud
 from api.schema import schemas
-from api.util.utils import get_db
+from api.util.utils import get_db, get_customer_by_id_if_exists, get_order_by_id_if_exists
 
 router = APIRouter()
 
@@ -19,3 +19,35 @@ def create_customer(customer: schemas.CustomerCreate, dbb: Session = Depends(get
 @router.get("/customers", response_model=List[schemas.CustomerInDB])
 def read_customers(dbb: Session = Depends(get_db)):
     return Crud.get_customers(dbb=dbb)
+
+
+@router.get("/customers/{cid}", response_model=schemas.CustomerInDB)
+def read_customer(cid: int, dbb: Session = Depends(get_db)):
+    return get_customer_by_id_if_exists(cid, dbb)
+
+
+@router.put("/customers/{cid}", response_model=schemas.CustomerInDB)
+def update_customer(cid: int, customer: schemas.CustomerRequestUpdate, dbb: Session = Depends(get_db)):
+    prev_customer = get_customer_by_id_if_exists(cid, dbb)
+
+    customer_update = schemas.CustomerUpdate(
+        customer_id=cid,
+        phone_number=customer.phone_number if customer.phone_number else prev_customer.phone_number,
+        address=customer.address if customer.address else prev_customer.address,
+    )
+
+    return Crud.update_customer(dbb=dbb, customer=customer_update)
+
+
+@router.put("/customers/{cid}/add_order/{oid}", response_model=schemas.CustomerInDB)
+def add_order_to_customer(cid: int, oid: int, dbb: Session = Depends(get_db)):
+    get_customer_by_id_if_exists(cid, dbb)
+    get_order_by_id_if_exists(oid, dbb)
+    return Crud.add_order_to_customer(dbb, cid, oid)
+
+
+@router.put("/customers/{cid}/remove_order/{oid}", response_model=schemas.CustomerInDB)
+def remove_order_for_customer(cid: int, oid: int, dbb: Session = Depends(get_db)):
+    get_customer_by_id_if_exists(cid, dbb)
+    get_order_by_id_if_exists(oid, dbb)
+    return Crud.remove_order_for_customer(dbb, cid, oid)
