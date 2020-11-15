@@ -16,6 +16,11 @@
 See setup.md
 ```
 
+## Run API
+```sh
+export PYTHONPATH=. &&  python api/app.py 
+```
+
 ## Run tests
 
 ```sh
