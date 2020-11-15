@@ -64,7 +64,7 @@ class SqlOrderCRUD(OrderCRUD):
         order_in_db = SqlOrderCRUD.get_order_by_id(dbb, order.order_id)
 
         order_in_db.is_completed = order.is_completed
-        order_in_db.delivery_method = order_in_db.delivery_method
+        order_in_db.delivery_method = order.delivery_method
 
         order_in_db.pizzas = []
         for p in order.pizzas:
