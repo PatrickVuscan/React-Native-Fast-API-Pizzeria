@@ -28,8 +28,15 @@ def get_drink_by_id_if_exists(did: int, dbb: Session):
 def get_order_by_id_if_exists(oid: int, dbb: Session):
     order = Crud.get_order_by_id(dbb, oid)
     if not order:
-        raise Exception(f"No such drink with {oid} found.")
+        raise Exception(f"No such order with {oid} found.")
     return order
+
+
+def get_customer_by_id_if_exists(cid: int, dbb: Session):
+    customer = Crud.get_customer_by_id(dbb, cid)
+    if not customer:
+        raise Exception(f"No such customer with {cid} found.")
+    return customer
 
 
 def get_db():
