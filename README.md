@@ -37,6 +37,12 @@ Note: To use the app please follow [this guide](https://docs.expo.io/workflow/de
 ./scripts/run_tests.sh
 ```
 
+### Test Coverage (97%)
+
+```sh
+./scripts/test_cov.sh
+```
+
 ## Run Linter
 
 ```sh
