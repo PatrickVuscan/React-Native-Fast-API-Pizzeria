@@ -77,7 +77,7 @@ In terms of design this code base is quite a disappointment. Even though the fea
 
 ## CI/CD + Clean Code
 
-We have a very good process that insures that we write code that is consistent and clean. For example we have defined rules in `.pylintrc` that enforces snake_case as well as providing variables names that are longer than 2 characters. We also enforce the google's python convention in `setup.cfg`. We further enforce functionality tests and linting by first running scripts on `precommit` and second running scripts on `pull-request`. 
+We have a very good process that insures that we write code that is consistent and clean. For example we have defined rules in `.pylintrc` that enforces snake_case as well as providing variables names that are longer than 2 characters. We also enforce the google's python convention in `setup.cfg`. We further enforce functionality tests and linting by first running scripts on `precommit` and second running scripts on `pull-request`.  We also check for server vulnerability by using `safety` and `bandit`. 
 
 
 
